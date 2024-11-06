@@ -23,7 +23,7 @@ local function init()
         return skill
     end}
     local sprite_color = {gm.make_color_rgb(240, 240, 120), gm.make_color_rgb(240, 120, 120)}
-    for type = 1, 1 do
+    for type = 1, 2 do
         obj = Interactable.new("hinyb", "oSkillChest" .. type)
         obj.obj_sprite = gm.constants.sChest4
         obj.spawn_with_sacrifice = true
@@ -122,12 +122,4 @@ local function init()
         end)
     end
 end
-gui.add_always_draw_imgui(function()
-    if ImGui.IsKeyPressed(519, false) then
-        local player = Player.get_client().value
-        if Instance.exists(player) then
-            gm.instance_create(player.x, player.y, obj.value)
-        end
-    end
-end)
 Initialize(init)
