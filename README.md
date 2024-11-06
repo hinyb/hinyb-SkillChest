@@ -1,4 +1,4 @@
- hinyb-SkillChest
+# hinyb-SkillChest
 * This is a small mod that adds a new type of chest that can give you skills.
 * If you find any bug or compatibility issues, please report it to github.
 
