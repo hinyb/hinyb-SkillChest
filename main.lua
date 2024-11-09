@@ -10,18 +10,18 @@ local function add_to_all_stages(self)
 end
 local function init()
     local spawn_weight = {8, 3}
-    local spawn_cost = {40, 60}
+    local spawn_cost = {24, 24} -- It seems they are not worth the high price for most skills, so I lowered their prices.
     local init_cost = {function(self)
-        self.value:interactable_init_cost(self.value, 0, 124)
+        self.value:interactable_init_cost(self.value, 0, 46)
     end, function(self)
-        self.value:interactable_init_cost(self.value, 2, 0.83)
+        self.value:interactable_init_cost(self.value, 2, 0.24)
     end}
     local skill_modifier = {function(skill)
         return skill
     end, function(skill)
         skill.slot_index = Utils.get_random(0, 3)
         return skill
-    end}
+    end} -- Need more time to add a universal skillpickup modifier
     local sprite_color = {gm.make_color_rgb(240, 240, 120), gm.make_color_rgb(240, 120, 120)}
     for type = 1, 2 do
         obj = Interactable.new("hinyb", "oSkillChest" .. type)
@@ -88,6 +88,7 @@ local function init()
                     local skill = Utils.warp_skill(self.skill_id)
                     self.skill_sprite = skill.sprite_index
                     self.skill_subimg = skill.image_index
+                    self.prompt_text = gm.ds_map_find_value(Utils.get_lang_map(), skill.translation_key .. ".name") -- It seems it is hard to distinguish which is which,and some skills don't have a icon.
                     if self.executions >= 15 then
                         self:set_state(1)
                     end
