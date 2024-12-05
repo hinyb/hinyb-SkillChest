@@ -17,11 +17,40 @@ local function init()
         self.value:interactable_init_cost(self.value, 2, 0.24)
     end}
     local skill_modifier = {function(skill)
+        local num = 0
+        while true do
+            if num == 1 then
+                if Utils.get_random() > 0.6 then
+                    break
+                end
+            end
+            if num == 2 then
+                if Utils.get_random() > 0.4 then
+                    break
+                end
+            end
+            if num > 2 then
+                if Utils.get_random() > 0.3 then
+                    break
+                end
+            end
+            SkillModifier.add_modifier_param(skill, SkillModifier.get_random_modifier())
+            num = num + 1
+        end
         return skill
     end, function(skill)
-        skill.slot_index = Utils.get_random(0, 3)
+        local num = 0
+        while true do
+            if num > 1 then
+                if Utils.get_random() > 0.1 then
+                    break
+                end
+            end
+            SkillModifier.add_modifier_param(skill, SkillModifier.get_random_modifier())
+            num = num + 1
+        end
         return skill
-    end} -- Need more time to add a universal skillpickup modifier
+    end} -- May need more modifiers
     local sprite_color = {gm.make_color_rgb(240, 240, 120), gm.make_color_rgb(240, 120, 120)}
     for type = 1, 2 do
         obj = Interactable.new("hinyb", "oSkillChest" .. type)
@@ -52,12 +81,9 @@ local function init()
                 self.text = gm.ds_map_find_value(Utils.get_lang_map(), "interactable.oChest4" .. ".pick")
                 self.prompt_text = gm.ds_map_find_value(Utils.get_lang_map(), "interactable.oChest4" .. ".active")
                 if Utils.get_net_type() ~= Net.TYPE.client then
-                    self.random_seed = self.frame - self.interval
-                    if Utils.get_net_type() == Net.TYPE.host then
-                        Utils.sync_instance_send(self.value, {
-                            random_seed = self.random_seed
-                        }, 1)
-                    end
+                    Utils.set_and_sync_inst_from_table(self.value, {
+                        random_seed = self.frame - self.interval
+                    })
                 end
             elseif self.random_seed then
                 self:set_state(1)
@@ -85,10 +111,10 @@ local function init()
                         data.get_skill = Utils.random_skill_id(self.random_seed)
                     end
                     self.skill_id = data.get_skill()
-                    local skill = Utils.warp_skill(self.skill_id)
-                    self.skill_sprite = skill.sprite_index
-                    self.skill_subimg = skill.image_index
-                    self.prompt_text = gm.ds_map_find_value(Utils.get_lang_map(), skill.translation_key .. ".name") -- It seems it is hard to distinguish which is which,and some skills don't have a icon.
+                    local default_skill = Class.SKILL:get(self.skill_id)
+                    self.skill_sprite = default_skill:get(4)
+                    self.skill_subimg = default_skill:get(5)
+                    self.prompt_text = Language.translate_token(default_skill:get(2)) -- It seems it is hard to distinguish which is which,and some skills don't have a icon.
                     if self.executions >= 15 then
                         self:set_state(1)
                     end
@@ -98,8 +124,11 @@ local function init()
         end, 0)
         obj:onStateStep(function(self)
             if Utils.get_net_type() ~= Net.TYPE.client then
-                local skill = Utils.warp_skill(self.skill_id)
-                skill_create(self.x + 8, self.y - 10, skill_modifier[type](skill))
+                local skill = {
+                    ["skill_id"] = self.skill_id,
+                    ["slot_index"] = Utils.get_slot_index_with_skill_id(self.skill_id)
+                }
+                SkillPickup.skill_create(self.x + 8, self.y - 10, skill_modifier[type](skill))
             end
             self.value:sound_play_at(gm.constants.wChest2, 1.0, 1.0, self.x, self.y, nil)
             self.value:part_particles_create_color(gm.variable_global_get("below"), self.x, self.y,
