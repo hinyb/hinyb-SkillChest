@@ -1,3 +1,6 @@
+v2.0.1
+* Fix sync bug.
+
 v2.0.0
 * Add skill modifiers.
 * I'm not good at balancing, so It may have many issues.
