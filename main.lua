@@ -1,6 +1,8 @@
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()
 mods["hinyb-Dropability"].auto()
 
+Utils.require_all("SkillModifiers")
+
 local function add_to_all_stages(self)
     local card_array, id = self:get_card()
     for i = 1, #Class.STAGE do
@@ -34,7 +36,7 @@ local function init()
                     break
                 end
             end
-            SkillModifier.add_modifier_param(skill, SkillModifier.get_random_modifier())
+            SkillModifier.add_random_modifier_param_with_check(skill)
             num = num + 1
         end
         return skill
@@ -46,7 +48,7 @@ local function init()
                     break
                 end
             end
-            SkillModifier.add_modifier_param(skill, SkillModifier.get_random_modifier())
+            SkillModifier.add_random_modifier_param_with_check(skill)
             num = num + 1
         end
         return skill
@@ -71,15 +73,15 @@ local function init()
             self.executions = 0.0
             self.sprite_offset_x = 2
             self.sprite_offset_y = 0
-            self.text = gm.ds_map_find_value(Utils.get_lang_map(), "interactable.oChest4" .. ".text")
+            self.text = Language.translate_token("interactable.oChest4" .. ".text")
             init_cost[type](self)
         end)
 
         obj:onActivate(function(self, actor)
             if not self.isopen then
                 self.isopen = true -- but actually is 1.0
-                self.text = gm.ds_map_find_value(Utils.get_lang_map(), "interactable.oChest4" .. ".pick")
-                self.prompt_text = gm.ds_map_find_value(Utils.get_lang_map(), "interactable.oChest4" .. ".active")
+                self.text = Language.translate_token("interactable.oChest4" .. ".pick")
+                self.prompt_text = Language.translate_token("interactable.oChest4" .. ".active")
                 if Utils.get_net_type() ~= Net.TYPE.client then
                     Utils.set_and_sync_inst_from_table(self.value, {
                         random_seed = self.frame - self.interval

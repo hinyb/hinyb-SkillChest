@@ -1,3 +1,6 @@
+v2.0.2
+* Move SkillModifier_Regs from Dropability.
+
 v2.0.1
 * Fix sync bug.
 
