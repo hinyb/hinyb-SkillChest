@@ -1,8 +1,10 @@
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()
 mods["hinyb-Dropability"].auto()
 
-Utils.require_all("SkillModifiers")
-
+local names = path.get_files(_ENV["!plugins_mod_folder_path"].."/SkillModifiers")
+for _, name in ipairs(names) do
+    require(name)
+end
 local function add_to_all_stages(self)
     local card_array, id = self:get_card()
     for i = 1, #Class.STAGE do

@@ -1,3 +1,8 @@
+v2.0.3
+* Delete unnessary sync function.
+* Add evolving_hunger modifier.
+* Fix flux may crash game and balance flux.
+
 v2.0.2
 * Move SkillModifier_Regs from Dropability.
 

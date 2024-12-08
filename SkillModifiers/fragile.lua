@@ -16,6 +16,5 @@ SkillModifier.register_modifier("fragile", 250, nil, function(skill, data)
         end
     end)
 end, function(skill, data)
-    SkillModifier.remove_on_activate_callback(data)
     SkillModifier.restore_attr(skill, "damage", data)
 end)

@@ -27,6 +27,10 @@
         "fragile" : {
             "name" : "<y>Fragile</c>",
             "description" : "Greatly increases the skill's damage, but each use may cause the skill to fracture."
+        },
+        "evolving_hunger" : {
+            "name" : "<y>Evolving Hunger</c>",
+            "description" : "A relentless desire for power that devours its host, growing with each use."
         }
     }
 }

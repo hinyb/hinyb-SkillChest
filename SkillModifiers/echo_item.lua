@@ -1,4 +1,4 @@
-SkillModifier.register_modifier("echo_item", 3200, nil, function(skill, data, item_id)
+SkillModifier.register_modifier("echo_item", 3200, nil, function(skill, data, modifier_index, item_id)
     local last_frame = 0
     local stack = 0
     local alarm_stop = function()
@@ -12,17 +12,18 @@ SkillModifier.register_modifier("echo_item", 3200, nil, function(skill, data, it
             last_frame = current_frame
         end
         alarm_stop()
+        local player = skill_.parent
         alarm_stop = Utils.add_alarm(function()
-            if Instance.exists(skill_.parent) then
-                gm.item_take(skill_.parent, item_id, stack, 0)
+            if Instance.exists(player) then
+                gm.item_take(player, item_id, stack, 0)
             end
             stack = 0
-            skill_.use_next_frame = current_frame + (base + 60) * 3
+            if skill_ then
+                skill_.use_next_frame = current_frame + (base + 60) * 3
+            end
         end, math.floor(base + 30))
     end)
-end, function(skill, data)
-    SkillModifier.remove_on_activate_callback(data)
-end, function(ori_desc, skill, item_id)
+end, nil, function(ori_desc, skill, item_id)
     local item = Class.ITEM:get(item_id)
     return "<y>" .. Language.translate_token("skill_modifier.echo_item.name") .. ": " ..
                Language.translate_token("skill_modifier.echo_item.description") .. "\n" ..
