@@ -1,3 +1,6 @@
+v2.1.1
+* Fix incorrect proability of evolving_hunger.
+
 v2.1.0
 * Refactor SkillModifier.
 * Fix incorrect usage of log.error.

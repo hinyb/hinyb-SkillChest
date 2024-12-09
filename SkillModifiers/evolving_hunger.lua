@@ -11,7 +11,7 @@ Initialize(function ()
         end)
     end, {Utils.param_type.string, Utils.param_type.int, Utils.param_type.Instance})
 end)
-local evolving_hunger = SkillModifierManager.register_modifier("evolving_hunger", 3200)
+local evolving_hunger = SkillModifierManager.register_modifier("evolving_hunger", 100)
 evolving_hunger:set_default_params_func(function ()
     return 1
 end)
