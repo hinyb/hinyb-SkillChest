@@ -31,6 +31,10 @@
         "evolving_hunger" : {
             "name" : "<y>Evolving Hunger</c>",
             "description" : "A relentless desire for power that devours its host, growing with each use."
+        },
+        "totem_of_undying" : {
+            "name" : "<y>Totem of Undying</c>",
+            "description" : "When the player receives fatal damage, revive the player and break the skill."
         }
     }
 }

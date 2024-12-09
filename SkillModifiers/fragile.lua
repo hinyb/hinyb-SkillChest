@@ -1,20 +1,19 @@
-SkillModifier.register_modifier("fragile", 250, nil, function(skill, data)
-    SkillModifier.change_attr_func(skill, "damage", data, function(origin_value)
+local fragile = SkillModifierManager.register_modifier("fragile", 250)
+fragile:set_add_func(function (data)
+    data:add_skill_attr_change("damage", function (origin_value)
         return origin_value * 10
     end)
-    SkillModifier.add_on_activate_callback(data, function(skill_)
-        if skill_.parent.is_local then
+    data:add_pre_activate_callback(function (data)
+        if data.skill.parent.is_local then
             if Utils.get_random() < 0.05 then
-                if skill_.ctm_arr_modifiers then
-                    local ctm_arr_modifiers = Array.wrap(skill_.ctm_arr_modifiers)
+                if data.skill.ctm_arr_modifiers then
+                    local ctm_arr_modifiers = Array.wrap(data.skill.ctm_arr_modifiers)
                     for i = 0, ctm_arr_modifiers:size() - 1 do
-                        SkillModifier.remove_modifier(skill_, i + 1, ctm_arr_modifiers:get(i):get(0))
+                        SkillModifierManager.remove_modifier(data.skill, ctm_arr_modifiers:get(i):get(0), i)
                     end
                 end
-                gm.actor_skill_set(skill_.parent, skill_.slot_index, 0)
+                gm.actor_skill_set(data.skill.parent, data.skill.slot_index, 0)
             end
         end
     end)
-end, function(skill, data)
-    SkillModifier.restore_attr(skill, "damage", data)
 end)

@@ -1,3 +1,8 @@
+v2.1.0
+* Refactor SkillModifier.
+* Fix incorrect usage of log.error.
+* Fix the skill with flux_slot_index can't drop.
+
 v2.0.3
 * Delete unnessary sync function.
 * Add evolving_hunger modifier.

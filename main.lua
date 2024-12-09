@@ -38,7 +38,7 @@ local function init()
                     break
                 end
             end
-            SkillModifier.add_random_modifier_param_with_check(skill)
+            SkillModifierManager.add_modifier_params(skill, SkillModifierManager.get_random_modifier_name_with_check(skill))
             num = num + 1
         end
         return skill
@@ -50,7 +50,7 @@ local function init()
                     break
                 end
             end
-            SkillModifier.add_random_modifier_param_with_check(skill)
+            SkillModifierManager.add_modifier_params(skill, SkillModifierManager.get_random_modifier_name_with_check(skill))
             num = num + 1
         end
         return skill
@@ -128,10 +128,7 @@ local function init()
         end, 0)
         obj:onStateStep(function(self)
             if Utils.get_net_type() ~= Net.TYPE.client then
-                local skill = {
-                    ["skill_id"] = self.skill_id,
-                    ["slot_index"] = Utils.get_slot_index_with_skill_id(self.skill_id)
-                }
+                local skill = Utils.wrap_skill(self.skill_id)
                 SkillPickup.skill_create(self.x + 8, self.y - 10, skill_modifier[type](skill))
             end
             self.value:sound_play_at(gm.constants.wChest2, 1.0, 1.0, self.x, self.y, nil)
