@@ -1,3 +1,11 @@
+v2.1.2
+* Fix incorrect proability of flux.
+* Improved life_burn, now it only triggers when the stock is 0 and the button is pressed.
+* Add totem_of_undying modifier.
+* Add time_dilation modifier.
+* Fix fragile's sync bug.
+* Add some sounds.
+
 v2.1.1
 * Fix incorrect proability of evolving_hunger.
 

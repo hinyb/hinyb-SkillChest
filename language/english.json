@@ -35,6 +35,10 @@
         "totem_of_undying" : {
             "name" : "<y>Totem of Undying</c>",
             "description" : "When the player receives fatal damage, revive the player and break the skill."
+        },
+        "time_dilation" : {
+            "name" : "<y>Time Dilation</c>",
+            "description" : "After using this skill, the time flow of <r>everything</c> except players is temporarily <y>slowed</c>, while players will speed up."
         }
     }
 }

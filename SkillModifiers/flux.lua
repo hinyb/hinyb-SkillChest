@@ -1,5 +1,5 @@
 local function register_flux(attr, fn)
-    local modifier = SkillModifierManager.register_modifier("flux_" .. attr, 12500)
+    local modifier = SkillModifierManager.register_modifier("flux_" .. attr, 125)
     modifier:set_add_func(function(data, modifier_index, value)
         if attr ~= "slot_index" then
             data:add_skill_attr_change(attr, function(origin_value)
@@ -19,18 +19,18 @@ local function register_flux(attr, fn)
         return fn(skill)
     end)
 end
-
+-- It is too hard to balance ;w;
 register_flux("max_stock", function(skill)
-    return Utils.round(Utils.get_gaussian_random_within(0, skill.max_stock * 3, skill.max_stock, skill.max_stock)) -
-               skill.max_stock
+    return Utils.round(Utils.get_gaussian_random_within(0, skill.max_stock * 3, skill.max_stock + 1,
+        0.5 + skill.max_stock * 0.12)) - skill.max_stock
 end)
 register_flux("damage", function(skill)
-    return Utils.round(Utils.get_gaussian_random_within(nil, skill.damage * 10, skill.damage * 1.1, skill.damage)) -
+    return Utils.get_gaussian_random_within(nil, skill.damage * 10, skill.damage * 1.25, skill.damage * 0.4) -
                skill.damage
 end)
 register_flux("cooldown", function(skill)
-    return Utils.round(Utils.get_gaussian_random_within(0, skill.cooldown * 4, skill.cooldown * 0.9, skill.cooldown)) -
-               skill.cooldown
+    return Utils.round(Utils.get_gaussian_random_within(0, skill.cooldown * 4, skill.cooldown * 0.8,
+        skill.cooldown * 0.2)) - skill.cooldown
 end)
 register_flux("slot_index", function()
     return Utils.get_random(0, 3)
