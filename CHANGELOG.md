@@ -1,3 +1,7 @@
+v2.1.3
+* Fix time_dilation modifier not multiplying correctly.
+* Fix some modifiers can't be removed correctly.
+
 v2.1.2
 * Fix incorrect proability of flux.
 * Improved life_burn, now it only triggers when the stock is 0 and the button is pressed.

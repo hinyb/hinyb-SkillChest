@@ -4,7 +4,7 @@ Initialize(function()
     fragile_message = Utils.create_packet(function(player, inst, slot_index)
         local skill = gm.array_get(inst.skills, slot_index)
         local ctm_arr_modifiers = Array.wrap(skill.ctm_arr_modifiers)
-        for i = 0, ctm_arr_modifiers:size() - 1 do
+        for i = ctm_arr_modifiers:size() - 1, 0 do
             SkillModifierManager.remove_modifier(skill, ctm_arr_modifiers:get(i):get(0), i)
         end
         gm.actor_skill_set(inst, slot_index, 0)

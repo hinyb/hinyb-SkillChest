@@ -4,19 +4,17 @@ local sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folde
 local during = 60
 local cooldown = 60 * 8
 local time_dilation_flag = false
+local alarm_stop = function()
+end
 local time_dilation = SkillModifierManager.register_modifier("time_dilation", 50)
 time_dilation:set_add_func(function(data, modifier_index, item_id)
     local last_frame = 0
-    local alarm_stop = function()
-    end
     data:add_pre_activate_callback(function(data)
         local current_frame = gm.variable_global_get("_current_frame")
-        if current_frame - last_frame >= cooldown then
+        if current_frame - last_frame >= cooldown and not time_dilation_flag then
             last_frame = current_frame
             gm.game_set_speed(24, false)
-            if not time_dilation_flag then
-                gm.audio_play_sound(sound, 1.0, true)
-            end
+            gm.audio_play_sound(sound, 1.0, true)
             time_dilation_flag = true
             alarm_stop()
             alarm_stop = Utils.add_alarm(function()
