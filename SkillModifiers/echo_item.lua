@@ -2,8 +2,7 @@ local echo_item = SkillModifierManager.register_modifier("echo_item", 3200)
 echo_item:set_add_func(function (data, modifier_index, item_id)
     local last_frame = 0
     local stack = 0
-    local alarm_stop = function()
-    end
+    local alarm
     data:add_pre_activate_callback(function(data)
         local current_frame = gm.variable_global_get("_current_frame")
         local base = math.max(data.skill.cooldown_base, 10)
@@ -12,9 +11,9 @@ echo_item:set_add_func(function (data, modifier_index, item_id)
             gm.item_give(data.skill.parent, item_id, 1, 0)
             last_frame = current_frame
         end
-        alarm_stop()
+        Alarm.destroy(alarm)
         local player = data.skill.parent
-        alarm_stop = Utils.add_alarm(function()
+        alarm = Alarm.create(function()
             if Instance.exists(player) then
                 gm.item_take(player, item_id, stack, 0)
             end

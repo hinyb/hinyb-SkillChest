@@ -1,3 +1,7 @@
+v2.1.4
+* Update to RMT 1.2.0.
+* Fix evolving_hunger's growth will be reset after being dropped.
+
 v2.1.3
 * Fix time_dilation modifier not multiplying correctly.
 * Fix some modifiers can't be removed correctly.
