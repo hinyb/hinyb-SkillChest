@@ -1,3 +1,7 @@
+v2.1.5
+* Add entropy modifiers.
+* Add lightning fire_trail and explosive_shot.
+
 v2.1.4
 * Update to RMT 1.2.0.
 * Fix evolving_hunger's growth will be reset after being dropped.

@@ -46,7 +46,15 @@
         },
         "fire_trail" : {
             "name" : "<y>Fire trail</c>",
-            "description" : "After using this skill, a <r>blazing trail</c> follows you briefly, scorching everything in its path."
+            "description" : "After using this skill, a <r>blazing trail</c> follows you temporarily, scorching everything in its path."
+        },
+        "explosive_shot" : {
+            "name" : "<y>Explosive shot</c>",
+            "description" : "After using this skill, your attacks are temporarily infused with explosive power."
+        },
+        "lightning" : {
+            "name" : "<y>Lightning</c>",
+            "description" : "After using this skill, your attacks are temporarily infused with lightning power."
         }
     }
 }
