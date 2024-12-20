@@ -1,6 +1,7 @@
-local sound = Resources.sfx_load("hinyb", "totem_of_undying", _ENV["!plugins_mod_folder_path"].."/sounds/glass_shatter.ogg")
+local sound
 local fragile_message
 Initialize(function()
+    sound = Resources.sfx_load("hinyb", "totem_of_undying", _ENV["!plugins_mod_folder_path"].."/sounds/glass_shatter.ogg")
     fragile_message = Utils.create_packet(function(player, inst, slot_index)
         local skill = gm.array_get(inst.skills, slot_index)
         local ctm_arr_modifiers = Array.wrap(skill.ctm_arr_modifiers)

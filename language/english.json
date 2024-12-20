@@ -22,23 +22,31 @@
         },
         "after_image" : {
             "name" : "<y>After-Image</c>",
-            "description" : "Focus briefly, channeling energy into an after-image. <b>All attacks are doubled</c> for three seconds. \nStacks twice. Its during depends on the skill's <y>cooldown</c>"
+            "description" : "Focus briefly, channeling energy into an after-image. <b>All attacks are doubled</c>. \nStacks twice. Its during depends on the skill's <y>cooldown</c>"
         },
         "fragile" : {
             "name" : "<y>Fragile</c>",
-            "description" : "Greatly increases the skill's damage, but each use may cause the skill to fracture."
+            "description" : "Greatly increases the skill's damage, but each use may cause the skill to <r>fracture</c>."
         },
         "evolving_hunger" : {
             "name" : "<y>Evolving Hunger</c>",
-            "description" : "A relentless desire for power that devours its host, growing with each use."
+            "description" : "A relentless desire for power that <r>devours</c> its host, growing with each use."
         },
         "totem_of_undying" : {
             "name" : "<y>Totem of Undying</c>",
-            "description" : "When the player receives fatal damage, revive the player and break the skill."
+            "description" : "When the player receives <r>fatal damage</c>, revive the player and <r>break</c> the skill."
         },
         "time_dilation" : {
             "name" : "<y>Time Dilation</c>",
             "description" : "After using this skill, the time flow of <r>everything</c> except players is temporarily <y>slowed</c>, while players will speed up."
+        },
+        "entropy" : {
+            "name" : "<y>Entropy</c>",
+            "description" : "When this skill gains a stack, it <r>randomly</c> transforms into another skill."
+        },
+        "fire_trail" : {
+            "name" : "<y>Fire trail</c>",
+            "description" : "After using this skill, a <r>blazing trail</c> follows you briefly, scorching everything in its path."
         }
     }
 }

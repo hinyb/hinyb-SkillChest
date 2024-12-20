@@ -1,6 +1,8 @@
 -- Stealing from Minecraft, I'm not sure if it's safe to use.
-local sound = Resources.sfx_load("hinyb", "totem_of_undying",
-    _ENV["!plugins_mod_folder_path"] .. "/sounds/use_totem.ogg")
+local sound
+Initialize(function ()
+    sound = Resources.sfx_load("hinyb", "totem_of_undying", _ENV["!plugins_mod_folder_path"] .. "/sounds/use_totem.ogg")
+end)
 local totem_of_undying = SkillModifierManager.register_modifier("totem_of_undying", 24)
 totem_of_undying:set_add_func(function(data)
     data:add_pre_actor_death_after_hippo_callback(function(data)

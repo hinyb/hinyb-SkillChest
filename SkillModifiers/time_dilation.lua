@@ -1,6 +1,9 @@
 -- This modifier may have many sync issues.
 -- Maybe make everything stop is more interesting.
-local sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folder_path"] .. "/sounds/clockticks.ogg")
+local sound
+Initialize(function ()
+    sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folder_path"] .. "/sounds/clockticks.ogg")
+end)
 local during = 60
 local cooldown = 60 * 8
 local time_dilation_flag = false

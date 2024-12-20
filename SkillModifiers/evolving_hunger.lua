@@ -14,12 +14,6 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
             actor.maxhp = actor.maxhp - num
         end)
         actor.maxhp = actor.maxhp - num
-        --[[
-        if Utils.get_net_type() == Net.TYPE.host then
-            evolving_hunger_message(Utils.packet_type.not_forward, id, total_num, data.skill.parent):send_to_all()
-        elseif Utils.get_net_type() == Net.TYPE.client then
-            evolving_hunger_message(Utils.packet_type.forward, id, total_num, data.skill.parent):send_to_host()
-        end]]
         data:add_skill_attr_change("damage", function(origin_value)
             return origin_value * 1.5
         end)
