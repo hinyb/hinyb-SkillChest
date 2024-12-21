@@ -10,10 +10,12 @@ local function register(name)
             local base = math.max(data.skill.cooldown_base, 10)
             Alarm.destroy(alarm)
             local actor = Instance.wrap(data.skill.parent)
-            actor:add_callback("onStatRecalc", id, function(actor)
+            if not actor:callback_exists(id) then
+                actor:add_callback("onStatRecalc", id, function(actor)
+                    actor[name] = 1
+                end)
                 actor[name] = 1
-            end)
-            actor[name] = 1
+            end
             alarm = Alarm.create(function()
                 if actor:exists() then
                     actor:remove_callback(id)

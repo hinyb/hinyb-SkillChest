@@ -5,7 +5,7 @@ end)
 life_burn:set_add_func(function(data)
     local num = Utils.get_handy_drone_type(data.skill.skill_id) ~= nil and 25 or data.skill.cooldown_base / 60 * 5
     local last_frame = 0
-    data:add_pre_can_activate_callback(function(data)
+    data:add_pre_local_can_activate_callback(function(data)
         local current_frame = gm.variable_global_get("_current_frame")
         if last_frame + 1 ~= current_frame then
             if data.skill.stock == 0 then
