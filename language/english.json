@@ -55,6 +55,10 @@
         "lightning" : {
             "name" : "<y>Lightning</c>",
             "description" : "After using this skill, your attacks are temporarily infused with lightning power."
+        },
+        "teleport" : {
+            "name" : "<y>Teleport</c>",
+            "description" : "After drop this skill, you will get a new skill to teleport to this skill."
         }
     }
 }

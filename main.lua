@@ -54,7 +54,7 @@ local function init()
     for chest_type = 1, 2 do
         obj = Object.new("hinyb", "oSkillChest" .. chest_type, Object.PARENT.interactable)
         obj.obj_sprite = gm.constants.sChest4
-        obj.obj_depth = 1.0
+        obj.obj_depth = 10.0
 
         -- Create Interactable Card
         local card = Interactable_Card.new("hinyb", "oSkillChest" .. chest_type)
