@@ -21,7 +21,7 @@ echo_item:set_add_func(function (data, modifier_index, item_id)
             if data.skill then
                 data.skill.use_next_frame = current_frame + math.max(4*60 - base, 60) * 3
             end
-        end, math.floor(base + 40))
+        end, math.floor(base + 60))
     end)
 end)
 echo_item:set_info_func(function(ori_desc, data, item_id)
