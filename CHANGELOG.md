@@ -1,6 +1,7 @@
 v2.1.5
-* Add entropy modifiers.
+* Add entropy modifier.
 * Add lightning fire_trail and explosive_shot.
+* Add teleport modifier.
 
 v2.1.4
 * Update to RMT 1.2.0.
