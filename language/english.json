@@ -26,11 +26,11 @@
         },
         "fragile" : {
             "name" : "<y>Fragile</c>",
-            "description" : "Greatly increases the skill's damage, but each use may cause the skill to <r>fracture</c>."
+            "description" : "Greatly increases the skill's <y>damage</c>, but each <r>use</c> may cause the skill to <r>fracture</c>."
         },
         "evolving_hunger" : {
             "name" : "<y>Evolving Hunger</c>",
-            "description" : "A relentless desire for power that <r>devours</c> its host, growing with each use."
+            "description" : "A relentless desire for power that <r>devours</c> its host, <y>growing</c> with each use."
         },
         "totem_of_undying" : {
             "name" : "<y>Totem of Undying</c>",
@@ -38,27 +38,39 @@
         },
         "time_dilation" : {
             "name" : "<y>Time Dilation</c>",
-            "description" : "After using this skill, the time flow of <r>everything</c> except players is temporarily <y>slowed</c>, while players will speed up."
+            "description" : "After <r>using</c> this skill, the time flow of <r>everything</c> except players is <y>temporarily slowed</c>, while players will <y>speed up</c>."
         },
         "entropy" : {
             "name" : "<y>Entropy</c>",
-            "description" : "When this skill gains a stack, it <r>randomly</c> transforms into another skill."
+            "description" : "When this skill <r>gains a stack</c>, it <y>randomly transforms</c> into another skill."
         },
         "fire_trail" : {
-            "name" : "<y>Fire trail</c>",
-            "description" : "After using this skill, a <r>blazing trail</c> follows you temporarily, scorching everything in its path."
+            "name" : "<y>Fire Trail</c>",
+            "description" : "After <r>using</c> this skill, a <y>blazing trail</c> follows you <r>temporarily</c>, scorching everything in its path."
         },
         "explosive_shot" : {
-            "name" : "<y>Explosive shot</c>",
-            "description" : "After using this skill, your attacks are temporarily infused with explosive power."
+            "name" : "<y>Explosive Shot</c>",
+            "description" : "After <r>using</c> this skill, your attacks are <r>temporarily</c> infused with <y>explosive</c> power."
         },
         "lightning" : {
             "name" : "<y>Lightning</c>",
-            "description" : "After using this skill, your attacks are temporarily infused with lightning power."
+            "description" : "After <r>using</c> this skill, your attacks are <r>temporarily</c> infused with <y>lightning</c> power."
         },
         "teleport" : {
             "name" : "<y>Teleport</c>",
-            "description" : "After drop this skill, you will get a new skill to teleport to this skill."
+            "description" : "After <r>drop</c> this skill, you will get a new skill to <y>teleport</c> to this skill."
+        },
+        "blood_lust" : {
+            "name" : "<y>Blood Lust</c>",
+            "description" : "<r>Slay</c> your enemies to quench your thirst for blood, <y>restoring health</c> with every kill."
+        },
+        "endest_reap" : {
+            "name" : "<y>Endest Reap</c>",
+            "description" : "<r>Defeat a boss</c> to harvest their power, increasing your skill <y>damage</c> with every kill."
+        },
+        "perpetual_strike" : {
+            "name" : "<y>Perpetual Strike</c>",
+            "description" : "Relentless and unyielding, this skill's <y>damage</c> increases with every <r>consecutive</c> hit on the <r>same</c> enemy."
         }
     }
 }

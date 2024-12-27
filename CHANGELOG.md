@@ -1,3 +1,9 @@
+v2.1.6
+* Add blood lust, endest reap and perpetual strike modifiers.
+* Balace echo_item and evolving_hunber.
+* Add a check to avoid adding damage modifiers to skills that have no damage.
+* Fix void_power can't work porperly.
+
 v2.1.5
 * Add entropy modifier.
 * Add lightning fire_trail and explosive_shot.

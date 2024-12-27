@@ -18,6 +18,11 @@ local function register_flux(attr, fn)
     modifier:set_default_params_func(function(skill)
         return fn(skill)
     end)
+    if attr == "damage" then
+        modifier:set_check_func(function(skill)
+            return Utils.is_damage_skill(skill.skill_id)
+        end)
+    end
 end
 -- It is too hard to balance ;w;
 register_flux("max_stock", function(skill)

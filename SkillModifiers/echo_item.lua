@@ -1,5 +1,5 @@
-local echo_item = SkillModifierManager.register_modifier("echo_item", 3200)
-echo_item:set_add_func(function (data, modifier_index, item_id)
+local echo_item = SkillModifierManager.register_modifier("echo_item", 2400)
+echo_item:set_add_func(function(data, modifier_index, item_id)
     local last_frame = 0
     local stack = 0
     local alarm
@@ -19,18 +19,18 @@ echo_item:set_add_func(function (data, modifier_index, item_id)
             end
             stack = 0
             if data.skill then
-                data.skill.use_next_frame = current_frame + math.max(4*60 - base, 60) * 3
+                data.skill.use_next_frame = current_frame + math.max(4 * 60 - base / 3, 60) * 3
             end
-        end, math.floor(base + 60))
+        end, math.floor(base + 80))
     end)
 end)
 echo_item:set_info_func(function(ori_desc, data, item_id)
     local item = Class.ITEM:get(item_id)
-    return "<y>" .. Language.translate_token("skill_modifier.echo_item.name") .. ": " ..
-               Language.translate_token("skill_modifier.echo_item.description") .. "\n" ..
-               Language.translate_token(item:get(2)) .. ": " .. Language.translate_token(item:get(3)) .. "\n" ..
+    return Language.translate_token("skill_modifier.echo_item.name") .. ": " ..
+               Language.translate_token("skill_modifier.echo_item.description") .. "\n" .. "<r>" ..
+               Language.translate_token(item:get(2)) .. "</c>" .. ": " .. Language.translate_token(item:get(3)) .. "\n" ..
                ori_desc
 end)
-echo_item:set_default_params_func(function ()
+echo_item:set_default_params_func(function()
     return Item.get_random().value
 end)

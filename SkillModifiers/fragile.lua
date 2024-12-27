@@ -35,3 +35,7 @@ fragile:set_add_func(function(data)
         end)
     end
 end)
+fragile:set_check_func(function(skill)
+    return Utils.is_damage_skill(skill.skill_id)
+end)
+

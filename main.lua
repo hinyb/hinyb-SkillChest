@@ -1,12 +1,14 @@
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 mods["hinyb-Dropability"].auto()
 
+require("Utils.lua")
+
 local names = path.get_files(_ENV["!plugins_mod_folder_path"] .. "/SkillModifiers")
 for _, name in ipairs(names) do
     require(name)
 end
 local function init()
-    local spawn_weight = {8, 3}
+    local spawn_weight = {8, 6}
     local spawn_cost = {24, 24} -- It seems they are not worth the high price for most skills, so I lowered their prices.
     local init_cost = {function(self)
         self.value:interactable_init_cost(self.value, 0, 46)
@@ -132,17 +134,19 @@ local function init()
                     end
                 end
             elseif self.active == 3 then
-                if Utils.get_net_type() ~= Net.TYPE.client then
-                    local skill = Utils.wrap_skill(data.skill_id)
-                    SkillPickup.skill_create(self.x + 8, self.y - 10, skill_modifier[chest_type](skill))
+                if self.activator then
+                    if self.activator.is_local then
+                        local skill = Utils.wrap_skill(data.skill_id)
+                        SkillPickup.skill_create(self.x + 8, self.y - 10, skill_modifier[chest_type](skill))
+                    end
+                    self:sound_play_at(gm.constants.wChest2, 1.0, 1.0, self.x, self.y, nil)
+                    -- local pHeal = Particle.find("ror", "pHeal")
+                    -- pHeal:create_color(self.x, self.y, 65536, 30)
+                    self.sprite_index = gm.constants.sChest4Open
+                    self.image_index = 0
+                    self.image_speed = 0.2
+                    self.active = 4
                 end
-                self:sound_play_at(gm.constants.wChest2, 1.0, 1.0, self.x, self.y, nil)
-                -- local pHeal = Particle.find("ror", "pHeal")
-                -- pHeal:create_color(self.x, self.y, 65536, 30)
-                self.sprite_index = gm.constants.sChest4Open
-                self.image_index = 0
-                self.image_speed = 0.2
-                self.active = 4
             end
         end)
         obj:onDraw(function(self)

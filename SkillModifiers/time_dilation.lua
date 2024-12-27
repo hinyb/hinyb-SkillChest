@@ -43,3 +43,14 @@ gm.post_script_hook(gm.constants.step_player, function(self, other, result, args
         flag = true
     end
 end)
+gm.post_script_hook(gm.constants.step_actor, function(self, other, result, args)
+    if flag and time_dilation_flag and self.object_index == gm.constants.oPDrone then
+        flag = false
+        local self_addr = memory.get_usertype_pointer(self)
+        local other_addr = memory.get_usertype_pointer(other)
+        for _ = 1, 3 do
+            _G[Dynamic_calls.oPDrone_Step_2](self_addr, other_addr)
+        end
+        flag = true
+    end
+end)
