@@ -1,22 +1,46 @@
 -- Some skills may be missing
-local non_instant_skills = {
+local instant_damage_skills = {
+    [23] = true, -- banditC -- need to fix
     [39] = true, -- handX
     [43] = true, -- handX2
     [44] = true, -- handX3
     [45] = true, -- handX4
+    [49] = true, -- engineerX
     [51] = true, -- engineerV
     [52] = true, -- engineerVBoosted
+    [54] = true, -- engineerX2
     [55] = true, -- engineerV2
     [56] = true, -- engineerV2Boosted
-    [77] = true, -- acridC -- need to fix
+    [77] = true, -- acridC -- hard to fix, this skill don't use damager_attack_process. -- apply_buff on_activate
     [95] = true, -- loaderV
     [96] = true, -- loaderVBoosted
     [99] = true, -- loaderV2
     [100] = true, -- loaderV2Boosted
     [147] = true -- monsterLemurianRiderLemC -- need to fix
 }
-Utils.is_instant_skill = function (skill_id)
-    return not non_instant_skills[skill_id]
+Utils.is_non_instant_damage_skill = function(skill_id)
+    return not instant_damage_skills[skill_id]
+end
+local summon_skills = {
+    [39] = true, -- handX
+    [43] = true, -- handX2
+    [44] = true, -- handX3
+    [45] = true, -- handX4
+    [49] = true, -- engineerX
+    [51] = true, -- engineerV
+    [52] = true, -- engineerVBoosted
+    [54] = true, -- engineerX2
+    [55] = true, -- engineerV2
+    [56] = true, -- engineerV2Boosted
+    [95] = true, -- loaderV
+    [96] = true, -- loaderVBoosted
+    [99] = true, -- loaderV2
+    [100] = true, -- loaderV2Boosted
+    [129] = true, -- drifterX
+    [133] = true -- drifterX2
+}
+Utils.is_summon_skill = function(skill_id)
+    return summon_skills[skill_id]
 end
 local no_damage_skills = {
     [3] = true, -- commandoC
@@ -44,6 +68,25 @@ local no_damage_skills = {
     [141] = true, -- robomandoV
     [142] = true -- robomandoVBoosted
 }
-Utils.is_damage_skill = function (skill_id)
+Utils.is_damage_skill = function(skill_id)
     return not no_damage_skills[skill_id]
 end
+local instance_list = {}
+local instance_create_flag = false
+local instance_filter = {}
+Utils.hook_instance_create = function(filter)
+    instance_filter = filter or {}
+    instance_create_flag = true
+end
+Utils.get_tracked_instances = function()
+    return instance_list
+end
+Utils.unhook_instance_create = function()
+    instance_create_flag = false
+    instance_list = {}
+end
+gm.post_script_hook(gm.constants.instance_create, function(self, other, result, args)
+    if instance_create_flag and not Helper.table_has(instance_filter, result.value.object_index) then
+        table.insert(instance_list, result.value)
+    end
+end)
