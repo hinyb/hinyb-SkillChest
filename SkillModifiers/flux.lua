@@ -20,7 +20,7 @@ local function register_flux(attr, fn)
     end)
     if attr == "damage" then
         modifier:set_check_func(function(skill)
-            return Utils.is_damage_skill(skill.skill_id)
+            return Utils.is_damage_skill(skill.skill_id) and SkillModifierManager.count_modifier(skill, "flux_" .. attr) < 1
         end)
     end
 end
