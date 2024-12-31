@@ -5,7 +5,8 @@ v2.1.6
 * Fix void_power can't work porperly.
 * Sync random seed when creating.
 * Fix echo_item can duplicate items and infinite revive.
-* Add heavy and light modifier.
+* Add heavy_strike and quick_draw modifier.
+* Fix totem_of_undying will crash game when the skill have the other modifiers.
 
 v2.1.5
 * Add entropy modifier.

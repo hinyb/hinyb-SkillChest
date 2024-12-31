@@ -11,7 +11,7 @@ totem_of_undying:set_add_func(function(data)
             inst.hp = inst.maxhp / 2
             local skill = gm.array_get(inst.skills, data.skill.slot_index).active_skill
             local ctm_arr_modifiers = Array.wrap(skill.ctm_arr_modifiers)
-            for i = ctm_arr_modifiers:size() - 1, 0 do
+            for i = ctm_arr_modifiers:size() - 1, 0, -1 do
                 SkillModifierManager.remove_modifier(skill, ctm_arr_modifiers:get(i):get(0), i)
             end
             gm.actor_skill_set(inst, skill.slot_index, 0)
