@@ -1,4 +1,4 @@
-v2.1.6
+v2.1.6 **Final version of 2024**
 * Add blood lust, endest reap and perpetual strike modifiers.
 * Balace echo_item, evolving_hunber, flux and fragile.
 * Add a check to avoid adding damage modifiers to skills that have no damage.

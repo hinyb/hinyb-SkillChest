@@ -1,12 +1,12 @@
 {
 	"name": "SkillChest",
-	"version_number": "2.1.5",
+	"version_number": "2.1.6",
 	"website_url": "https://github.com/hinyb/hinyb-SkillChest",
 	"description": "Add a new type of chest that can give you skills",
 	"dependencies": [
 		"ReturnOfModding-ReturnOfModding-1.0.56",
-		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.2.0",
-		"hinyb-Dropability-3.1.5",
+		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.2.10",
+		"hinyb-Dropability-3.1.7",
 		"MGReturns-ENVY-1.1.1"
 	]
 }
