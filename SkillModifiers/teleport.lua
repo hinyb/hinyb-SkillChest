@@ -92,9 +92,9 @@ Initialize(function()
             not gm.call("gml_Script_control", actor.value, actor.value, "skill" .. tostring(index + 1), false) then
             struct.active = 0.0
             actor:remove_callback("teleport" .. tostring(struct.teleport_id))
-            if Utils.get_net_type() == Net.TYPE.host then
+            if Net.is_host() then
                 teleport_remove_message(Utils.packet_type.not_forward, actor, struct.teleport_id):send_to_all()
-            elseif Utils.get_net_type() == Net.TYPE.client then
+            elseif Net.is_client() then
                 teleport_remove_message(Utils.packet_type.forward, actor, struct.teleport_id):send_to_host()
             end
         end
@@ -133,9 +133,9 @@ teleport:set_add_func(function(data, modifier_index, teleport_id)
         gm.actor_skill_set(actor, skill_params.slot_index, skill.value)
         local new_skill = gm.array_get(actor.skills, skill_params.slot_index).active_skill
         new_skill.teleport_id = teleport_id
-        if Utils.get_net_type() == Net.TYPE.host then
+        if Net.is_host() then
             teleport_add_message(Utils.packet_type.not_forward, actor, skill_params.slot_index, teleport_id):send_to_all()
-        elseif Utils.get_net_type() == Net.TYPE.client then
+        elseif Net.is_client() then
             teleport_add_message(Utils.packet_type.forward, actor, skill_params.slot_index, teleport_id):send_to_host()
         end
     end)

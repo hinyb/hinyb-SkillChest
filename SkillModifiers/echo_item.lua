@@ -8,14 +8,14 @@ echo_item:set_add_func(function(data, modifier_index, item_id)
         local base = math.max(data.skill.cooldown_base, 10)
         if current_frame - last_frame >= base and stack < 4 then
             stack = stack + 1
-            gm.item_give(data.skill.parent, item_id, 1, 0)
+            gm.item_give(data.skill.parent, item_id, 1, 1)
             last_frame = current_frame
         end
         Alarm.destroy(alarm)
         local player = data.skill.parent
         alarm = Alarm.create(function()
             if Instance.exists(player) then
-                gm.item_take(player, item_id, stack, 0)
+                gm.item_take(player, item_id, stack, 1)
             end
             stack = 0
             if data.skill then
@@ -32,5 +32,9 @@ echo_item:set_info_func(function(ori_desc, data, item_id)
                ori_desc
 end)
 echo_item:set_default_params_func(function()
-    return Item.get_random().value
+    local item_id = Item.get_random().value
+    while item_id == 76 do
+        item_id = Item.get_random().value
+    end
+    return item_id
 end)

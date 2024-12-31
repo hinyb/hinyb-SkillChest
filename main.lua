@@ -83,6 +83,11 @@ local function init()
             data.sprite_offset_x = 2
             data.sprite_offset_y = 0
             init_cost[chest_type](self)
+            if not Net.is_client() then
+                Utils.set_and_sync_inst_from_table(self.value, {
+                    random_seed = Utils.get_random_seed()
+                })
+            end
         end)
         obj:onStep(function(self)
             local data = self:get_data()
@@ -92,11 +97,6 @@ local function init()
                     data.isopen = true -- but actually is 1.0
                     self.text = Language.translate_token("interactable.oChest4" .. ".pick")
                     self.prompt_text = Language.translate_token("interactable.oChest4" .. ".active")
-                    if Utils.get_net_type() ~= Net.TYPE.client then
-                        Utils.set_and_sync_inst_from_table(self.value, {
-                            random_seed = data.frame - data.interval
-                        })
-                    end
                     self.cost = 0.0
                     self.active = 0
                 elseif self.random_seed then
@@ -108,9 +108,9 @@ local function init()
                 if self.image_index > 8.0 then
                     self.image_index = 0
                 end
-                if self.random_seed then
+                if data.isopen then
                     if data.start_frame == nil then
-                        data.start_frame = self.random_seed
+                        data.start_frame = data.frame - data.interval
                     end
                     self.value:draw_text_w(self.x, self.y + 30, self.prompt_text)
                     if data.frame - data.start_frame >= data.interval then
@@ -140,8 +140,8 @@ local function init()
                         SkillPickup.skill_create(self.x + 8, self.y - 10, skill_modifier[chest_type](skill))
                     end
                     self:sound_play_at(gm.constants.wChest2, 1.0, 1.0, self.x, self.y, nil)
-                    -- local pHeal = Particle.find("ror", "pHeal")
-                    -- pHeal:create_color(self.x, self.y, 65536, 30)
+                    local Heal = Particle.find("ror", "Heal")
+                    Heal:create_color(self.x, self.y, 65536, 30)
                     self.sprite_index = gm.constants.sChest4Open
                     self.image_index = 0
                     self.image_speed = 0.2

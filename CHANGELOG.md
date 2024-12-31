@@ -1,8 +1,11 @@
 v2.1.6
 * Add blood lust, endest reap and perpetual strike modifiers.
-* Balace echo_item and evolving_hunber.
+* Balace echo_item, evolving_hunber, flux and fragile.
 * Add a check to avoid adding damage modifiers to skills that have no damage.
 * Fix void_power can't work porperly.
+* Sync random seed when creating.
+* Fix echo_item can duplicate items and infinite revive.
+* Add heavy and light modifier.
 
 v2.1.5
 * Add entropy modifier.

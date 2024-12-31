@@ -1,5 +1,5 @@
 local function register_flux(attr, fn)
-    local modifier = SkillModifierManager.register_modifier("flux_" .. attr, 125)
+    local modifier = SkillModifierManager.register_modifier("flux_" .. attr)
     modifier:set_add_func(function(data, modifier_index, value)
         if attr ~= "slot_index" then
             data:add_skill_attr_change(attr, function(origin_value)

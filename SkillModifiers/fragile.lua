@@ -19,15 +19,15 @@ fragile:set_add_func(function(data)
     end)
     if data.skill.parent.is_local then
         data:add_pre_activate_callback(function(data)
-            if Utils.get_random() < 0.05 then
+            if Utils.get_random() < 0.02 then
                 local ctm_arr_modifiers = Array.wrap(data.skill.ctm_arr_modifiers)
                 for i = 0, ctm_arr_modifiers:size() - 1 do
                     SkillModifierManager.remove_modifier(data.skill, ctm_arr_modifiers:get(i):get(0), i)
                 end
                 gm.actor_skill_set(data.skill.parent, data.skill.slot_index, 0)
-                if Utils.get_net_type() == Net.TYPE.host then
+                if Net.is_host() then
                     fragile_message(Utils.packet_type.not_forward, data.skill.parent, data.skill.slot_index):send_to_all()
-                elseif Utils.get_net_type() == Net.TYPE.client then
+                elseif Net.is_client() then
                     fragile_message(Utils.packet_type.forward, data.skill.parent, data.skill.slot_index):send_to_host()
                 end
                 gm.sound_play_at(sound, 1.0, 1.0, data.skill.parent.x, data.skill.parent.y, 1.0)
