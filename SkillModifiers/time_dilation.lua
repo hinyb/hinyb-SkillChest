@@ -30,6 +30,9 @@ end)
 time_dilation:set_check_func(function(skill)
     return SkillModifierManager.count_modifier(skill, "time_dilation") < 1
 end)
+time_dilation:set_monster_check_func(function(skill)
+    return false
+end)
 local flag = true
 gm.post_script_hook(gm.constants.step_player, function(self, other, result, args)
     if flag and time_dilation_flag then

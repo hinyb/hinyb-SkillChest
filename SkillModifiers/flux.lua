@@ -23,6 +23,11 @@ local function register_flux(attr, fn)
             return Utils.is_damage_skill(skill.skill_id) and SkillModifierManager.count_modifier(skill, "flux_" .. attr) < 1
         end)
     end
+    if attr == "slot_index" then
+        modifier:set_monster_check_func(function(skill)
+            return false
+        end)
+    end
 end
 -- It is too hard to balance ;w;
 register_flux("max_stock", function(skill)

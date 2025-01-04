@@ -13,8 +13,10 @@ void_power:set_add_func(function(data, modifier_index)
         end)
 end)
 void_power:set_remove_func(function(data, modifier_index)
-    Instance_ext.remove_callback(data.skill.parent, "post_local_drop", "void_power_skill_recalculate_stats"..tostring(data.skill.slot_index))
-    Instance_ext.remove_callback(data.skill.parent, "post_local_pickup", "void_power_skill_recalculate_stats"..tostring(data.skill.slot_index))
+    Instance_ext.remove_callback(data.skill.parent, "post_local_drop",
+        "void_power_skill_recalculate_stats" .. tostring(data.skill.slot_index))
+    Instance_ext.remove_callback(data.skill.parent, "post_local_pickup",
+        "void_power_skill_recalculate_stats" .. tostring(data.skill.slot_index))
 end)
 void_power:set_check_func(function(skill)
     return Utils.is_damage_skill(skill.skill_id)

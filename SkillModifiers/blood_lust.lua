@@ -18,3 +18,6 @@ blood_lust:set_check_func(function(skill)
     return (Utils.is_non_instant_damage_skill(skill.skill_id) or Utils.is_summon_skill(skill.skill_id)) and
                Utils.is_damage_skill(skill.skill_id)
 end)
+blood_lust:set_monster_check_func(function(skill)
+    return false
+end)

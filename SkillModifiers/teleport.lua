@@ -143,6 +143,9 @@ end)
 teleport:set_check_func(function(skill)
     return SkillModifierManager.count_modifier(skill, "teleport") < 1
 end)
+teleport:set_monster_check_func(function(skill)
+    return false
+end)
 local total_teleport_num = 0.0 -- There must be a double because all numbers in gamemaker are stored as double.
 teleport:set_default_params_func(function()
     total_teleport_num = total_teleport_num + 1

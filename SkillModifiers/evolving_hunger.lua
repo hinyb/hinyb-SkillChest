@@ -42,3 +42,6 @@ evolving_hunger:set_check_func(function(skill)
     return SkillModifierManager.count_modifier(skill, evolving_hunger.modifier_name) < 1 and
     Utils.is_damage_skill(skill.skill_id)
 end)
+evolving_hunger:set_monster_check_func(function(skill)
+    return false
+end)

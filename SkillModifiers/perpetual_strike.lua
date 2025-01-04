@@ -10,7 +10,7 @@ perpetual_strike:set_add_func(function(data, modifier_index)
                 stacks = 0
             else
                 stacks = math.min(max_stack, stacks + 1)
-                hit_info.damage = hit_info.damage * (1 + stacks * 1)
+                hit_info.damage = hit_info.damage * (1 + stacks * 0.2)
             end
         end)
 end)
