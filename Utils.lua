@@ -71,22 +71,3 @@ local no_damage_skills = {
 Utils.is_damage_skill = function(skill_id)
     return not no_damage_skills[skill_id]
 end
-local instance_list = {}
-local instance_create_flag = false
-local instance_filter = {}
-Utils.hook_instance_create = function(filter)
-    instance_filter = filter or {}
-    instance_create_flag = true
-end
-Utils.get_tracked_instances = function()
-    return instance_list
-end
-Utils.unhook_instance_create = function()
-    instance_create_flag = false
-    instance_list = {}
-end
-gm.post_script_hook(gm.constants.instance_create, function(self, other, result, args)
-    if instance_create_flag and not Helper.table_has(instance_filter, result.value.object_index) then
-        table.insert(instance_list, result.value)
-    end
-end)

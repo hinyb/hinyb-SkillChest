@@ -6,7 +6,7 @@ endest_reap:set_add_func(function(data, modifier_index)
     end)
     local id = "endest_reap" .. tostring(data.skill.slot_index) .. tostring(modifier_index)
     local actor = Instance.wrap(data.skill.parent)
-    actor:add_callback("onKillProc", id, function (actor, victim)
+    actor:add_callback("onKillProc", id, function(actor, victim)
         if victim.boss_drop_item ~= 0.0 then
             modifer:set(1, modifer:get(1) + 1)
             gm.get_script_ref(102397)(data.skill, data.skill.parent)
@@ -23,4 +23,8 @@ endest_reap:set_default_params_func(function()
 end)
 endest_reap:set_check_func(function(skill)
     return Utils.is_damage_skill(skill.skill_id)
+end)
+endest_reap:set_info_func(function(ori_desc, data, stack)
+    return Language.translate_token("skill_modifier.endest_reap.name").. "•" .. tostring(stack) .. ": " ..
+               Language.translate_token("skill_modifier.endest_reap.description") .. "\n" .. ori_desc
 end)
