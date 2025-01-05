@@ -1,6 +1,7 @@
 v2.1.7
 * Fix fragile can't be synced correctly in multiplayer.
 * Change to new track api. Now blood_lust and perpetual_stike should trigger correctly.
+* Make heavy_strike and quick_draw more fun.
 
 v2.1.6 **Final version of 2024**
 * Add blood lust, endest reap and perpetual strike modifiers.

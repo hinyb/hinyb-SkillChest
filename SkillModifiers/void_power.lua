@@ -5,11 +5,11 @@ void_power:set_add_func(function(data, modifier_index)
     end)
     Instance_ext.add_callback(data.skill.parent, "post_local_drop",
         "void_power_skill_recalculate_stats" .. tostring(data.skill.slot_index), function()
-            gm.get_script_ref(102397)(data.skill, data.skill.parent)
+            gm._mod_ActorSkill_recalculateStats(data.skill)
         end)
     Instance_ext.add_callback(data.skill.parent, "post_local_pickup",
         "void_power_skill_recalculate_stats" .. tostring(data.skill.slot_index), function()
-            gm.get_script_ref(102397)(data.skill, data.skill.parent)
+            gm._mod_ActorSkill_recalculateStats(data.skill)
         end)
 end)
 void_power:set_remove_func(function(data, modifier_index)

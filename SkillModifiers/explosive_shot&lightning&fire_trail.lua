@@ -19,7 +19,7 @@ local function register(name)
             alarm = Alarm.create(function()
                 if actor:exists() then
                     actor:remove_callback(id)
-                    actor:recalculate_stats()
+                    GM.actor_queue_dirty(actor)
                 end
             end, math.floor(base))
         end)

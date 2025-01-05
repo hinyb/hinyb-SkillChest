@@ -88,15 +88,21 @@ Initialize(function()
         end)
     end)
     skill:onPostStep(function(actor, struct, index)
-        if actor.is_local and struct.active == 1.0 and
-            not gm.call("gml_Script_control", actor.value, actor.value, "skill" .. tostring(index + 1), false) then
-            struct.active = 0.0
-            actor:remove_callback("teleport" .. tostring(struct.teleport_id))
-            if Net.is_host() then
-                teleport_remove_message(Utils.packet_type.not_forward, actor, struct.teleport_id):send_to_all()
-            elseif Net.is_client() then
-                teleport_remove_message(Utils.packet_type.forward, actor, struct.teleport_id):send_to_host()
-            end
+        if not actor.is_local then
+            return
+        end
+        if struct.active ~= 1.0 then
+            return
+        end
+        if gm.call("gml_Script_control", actor.value, actor.value, "skill" .. tostring(index + 1), false) then
+            return
+        end
+        struct.active = 0.0
+        actor:remove_callback("teleport" .. tostring(struct.teleport_id))
+        if Net.is_host() then
+            teleport_remove_message(Utils.packet_type.not_forward, actor, struct.teleport_id):send_to_all()
+        elseif Net.is_client() then
+            teleport_remove_message(Utils.packet_type.forward, actor, struct.teleport_id):send_to_host()
         end
     end)
     SkillPickup.add_skill_override_check_func(function(actor, skill_)

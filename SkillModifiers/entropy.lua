@@ -23,7 +23,7 @@ entropy:set_add_func(function(data, modifier_index, random_seed)
         data.skill.skill_id = fake_skill.skill_id
         data.skill.cooldown_base = get_random(0, fake_skill.cooldown * 1.5)
         data.skill.damage_base = get_random(fake_skill.cooldown * 0.5, fake_skill.damage * 2)
-        gm.get_script_ref(102397)(data.skill, data.skill.parent)
+        gm._mod_ActorSkill_recalculateStats(data.skill)
     end)
 end)
 entropy:set_check_func(function(skill)

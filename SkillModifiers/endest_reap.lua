@@ -9,7 +9,7 @@ endest_reap:set_add_func(function(data, modifier_index)
     actor:add_callback("onKillProc", id_prefix, function(actor, victim)
         if victim.boss_drop_item ~= 0.0 then
             modifer:set(1, modifer:get(1) + 1)
-            gm.get_script_ref(102397)(data.skill, data.skill.parent)
+            gm._mod_ActorSkill_recalculateStats(data.skill)
         end
     end)
 end)

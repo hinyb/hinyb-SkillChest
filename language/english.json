@@ -72,13 +72,13 @@
             "name" : "<y>Perpetual Strike</c>",
             "description" : "Relentless and unyielding, this skill's <y>damage</c> increases with every <r>consecutive</c> hit on the <r>same</c> enemy."
         },
-        "quick_draw" : {
-            "name" : "<y>Quick Draw</c>",
-            "description" : "Significantly <r>increases/c> <y>attack speed</c>, but <r>reduces/c> <y>damage</c>."
+        "light" : {
+            "name" : "<y>Light</c>",
+            "description" : "<r>Reduces</c> <y>gravity</c>, significantly <r>increases/c> <y>attack speed</c>, but <r>reduces/c> <y>damage</c>."
         },
-        "heavy_strike" : {
-            "name" : "<y>Heavy Strike</c>",
-            "description" : "Significantly <r>increases/c> <y>damage</c>, but <r>reduces/c> <y>attack speed</c>."
+        "heavy" : {
+            "name" : "<y>Heavy</c>",
+            "description" : "The weight is so overwhelming that it feels like carrying an <b>anvil</c>.\n <r>Increases</c> gravity</c>, significantly <r>increases/c> <y>damage</c>, but <r>reduces/c> <y>attack speed</c>."
         }
     }
 }
