@@ -8,7 +8,7 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
         local times = modifer:get(1)
         local actor = Instance.wrap(data.skill.parent)
         local skill_address = memory.get_usertype_pointer(data.skill)
-        local id = tostring(skill_address) .. tostring(modifier_index) .. tostring(times)
+        local id = Utils.to_string_with_floor(skill_address) .. tostring(modifier_index) .. Utils.to_string_with_floor(times)
         local num = Utils.round(0.64 * times * 1.08 ^ times)
         if num >= actor.maxhp then
             data:add_skill_attr_change("cooldown", function(origin_value)

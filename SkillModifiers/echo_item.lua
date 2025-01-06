@@ -1,5 +1,8 @@
 local echo_item = SkillModifierManager.register_modifier("echo_item", 2400)
 echo_item:set_add_func(function(data, modifier_index, item_id)
+    if Net.is_client() then
+        return
+    end
     local last_frame = 0
     local stack = 0
     local alarm
@@ -13,8 +16,9 @@ echo_item:set_add_func(function(data, modifier_index, item_id)
         end
         Alarm.destroy(alarm)
         local player = data.skill.parent
+        local player_id = player.id
         alarm = Alarm.create(function()
-            if Instance.exists(player) then
+            if Instance.exists(player_id) then
                 gm.item_take(player, item_id, stack, 1)
             end
             stack = 0

@@ -48,6 +48,9 @@ local function calculate_vertex(angle, l)
     end
     return result
 end
+local function get_teleport_name(teleport_id)
+    return "teleport" .. Utils.to_string_with_floor(teleport_id)
+end
 local teleport_add_message, teleport_remove_message
 Initialize(function()
     teleport_add_message = Utils.create_packet(function(player, actor, slot_index, teleport_id)
@@ -57,7 +60,8 @@ Initialize(function()
     end, {Utils.param_type.Instance, Utils.param_type.int, Utils.param_type.int})
     teleport_remove_message = Utils.create_packet(function(player, actor, teleport_id)
         local actor_ = Instance.wrap(actor)
-        actor_:remove_callback("teleport" .. tostring(teleport_id))
+        local id = get_teleport_name(teleport_id)
+        actor_:remove_callback(id)
     end, {Utils.param_type.Instance, Utils.param_type.int})
     local sprite = Resources.sprite_load("hinyb", "entropy",
         _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport_skill.png")
@@ -72,7 +76,8 @@ Initialize(function()
     skill:onActivate(function(actor, struct, index)
         struct.active = 1.0
         struct.process = 0
-        actor:add_callback("onPreDraw", "teleport" .. tostring(struct.teleport_id), function()
+        local id = get_teleport_name(struct.teleport_id)
+        actor:add_callback("onPreDraw", id, function()
             struct.freeze_cooldown(struct, struct)
             struct.process = struct.process + 1
             local angle = struct.process / need_process * 360
@@ -83,7 +88,7 @@ Initialize(function()
                 if target then
                     gm.teleport_nearby(actor.value, target.x, target.y)
                 end
-                actor:remove_callback("teleport" .. tostring(struct.teleport_id))
+                actor:remove_callback(id)
             end
         end)
     end)
@@ -94,11 +99,12 @@ Initialize(function()
         if struct.active ~= 1.0 then
             return
         end
-        if gm.call("gml_Script_control", actor.value, actor.value, "skill" .. tostring(index + 1), false) then
+        if gm.call("gml_Script_control", actor.value, actor.value, "skill" .. Utils.to_string_with_floor(index + 1), false) then
             return
         end
         struct.active = 0.0
-        actor:remove_callback("teleport" .. tostring(struct.teleport_id))
+        local id = get_teleport_name(struct.teleport_id)
+        actor:remove_callback(id)
         if Net.is_host() then
             teleport_remove_message(Utils.packet_type.not_forward, actor, struct.teleport_id):send_to_all()
         elseif Net.is_client() then
@@ -135,7 +141,7 @@ end)
 
 local teleport = SkillModifierManager.register_modifier("teleport", 124)
 teleport:set_add_func(function(data, modifier_index, teleport_id)
-    data:add_post_drop_callback(function(actor, skill_params)
+    data:add_post_local_drop_callback(function(actor, skill_params)
         gm.actor_skill_set(actor, skill_params.slot_index, skill.value)
         local new_skill = gm.array_get(actor.skills, skill_params.slot_index).active_skill
         new_skill.teleport_id = teleport_id

@@ -5,7 +5,7 @@ local function register(name)
     end)
     modifier:set_add_func(function(data, modifier_index)
         local alarm
-        local id = name .. tostring(data.skill.slot_index)
+        local id = data:get_id()
         data:add_pre_activate_callback(function(data)
             local base = math.max(data.skill.cooldown_base, 10)
             Alarm.destroy(alarm)
@@ -16,8 +16,9 @@ local function register(name)
                 end)
                 actor[name] = 1
             end
+            local actor_id = actor.id
             alarm = Alarm.create(function()
-                if actor:exists() then
+                if Instance.exists(actor_id) then
                     actor:remove_callback(id)
                     GM.actor_queue_dirty(actor)
                 end

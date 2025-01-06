@@ -79,6 +79,10 @@
         "heavy" : {
             "name" : "<y>Heavy</c>",
             "description" : "The weight is so overwhelming that it feels like carrying an <b>anvil</c>.\n <r>Increases</c> gravity</c>, significantly <r>increases/c> <y>damage</c>, but <r>reduces/c> <y>attack speed</c>."
+        },
+        "noxp" : {
+            "name" : "<y>NoXP, More Power</c>",
+            "description" : "The skill <r>prevents</c> the owner from <y>leveling up</c>, but greatly <r>increases</c> its <y>damage</c>."
         }
     }
 }

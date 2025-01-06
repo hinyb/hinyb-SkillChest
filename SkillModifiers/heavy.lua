@@ -1,17 +1,16 @@
 local heavy = SkillModifierManager.register_modifier("heavy")
 heavy:set_add_func(function(data, modifier_index)
-    local id_prefix = "heavy" .. tostring(data.skill.slot_index) .. tostring(modifier_index)
+    local id = data:get_id(modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
         return origin_value * 4
     end)
     data:add_post_activate_callback(function(data)
-        local cache_attack_speed = data.skill.parent.attack_speed
-        data.skill.parent.attack_speed = cache_attack_speed / 2
-        Instance_ext.add_on_anim_end(data.skill.parent, id_prefix, function(actor)
-            data.skill.parent.attack_speed = cache_attack_speed
+        data.skill.parent.attack_speed = data.skill.parent.attack_speed / 2
+        Instance_ext.add_on_anim_end(data.skill.parent, id, function(actor)
+            data.skill.parent.attack_speed = data.skill.parent.attack_speed * 2
         end)
     end)
-    data:add_pre_drop_callback(function(data)
+    data:add_pre_local_drop_callback(function(data)
         local modifer = Array.wrap(data.skill.ctm_arr_modifiers):get(modifier_index)
         modifer:set(1, data.skill.parent.damage)
     end)
@@ -20,15 +19,14 @@ heavy:set_add_func(function(data, modifier_index)
     inst.pGravity2 = inst.pGravity2 * 1.25
     inst.max_pGravity1 = inst.max_pGravity1 or 30
     inst.max_pGravity1 = inst.max_pGravity1 * 1.25
-    inst:add_callback("onPostStatRecalc", id_prefix, function(inst)
+    inst:add_callback("onPostStatRecalc", id, function(inst)
         inst.pGravity1 = inst.pGravity1 * 1.25
         inst.pGravity2 = inst.pGravity2 * 1.25
     end)
 end)
-heavy:set_remove_func(function (data, modifier_index)
-    local id_prefix = "heavy" .. tostring(data.skill.slot_index) .. tostring(modifier_index)
+heavy:set_remove_func(function(data, modifier_index)
     local inst = Instance.wrap(data.skill.parent)
-    inst:remove_callback(id_prefix)
+    inst:remove_callback(data:get_id(modifier_index))
     GM.actor_queue_dirty(inst)
     -- Loss of precision may cause some issues.
     inst.max_pGravity1 = inst.max_pGravity1 / 1.25
@@ -73,19 +71,23 @@ heavy:set_add_inst_func(function(inst, skill_params, x, y, modifier_index, damag
         local last_pVspeed = inst.pVspeed
         inst:actor_phy_move()
         inst.image_speed = 0
-        local collisions_list, collisions_num = inst:get_collisions(gm.constants.pActorCollisionBase)
-        for i = 1, collisions_num do
-            local collisions_inst_warpped = collisions_list[i]
-            if collisions_inst_warpped.object_index ~= gm.constants.oP then
-                gm._mod_attack_fire_explosion_noparent(collisions_inst_warpped.x, collisions_inst_warpped.y, 40, 40,
-                0.0, damage * last_pVspeed / 2, true, gm.constants.sNone, gm.constants.sNone)
+        if not Net.is_client() then
+            local collisions_list, collisions_num = inst:get_collisions(gm.constants.pActorCollisionBase)
+            for i = 1, collisions_num do
+                local collisions_inst_warpped = collisions_list[i]
+                if collisions_inst_warpped.object_index ~= gm.constants.oP then
+                    gm._mod_attack_fire_explosion_noparent(collisions_inst_warpped.x, collisions_inst_warpped.y, 40, 40,
+                        0.0, damage * last_pVspeed / 2, true, gm.constants.sNone, gm.constants.sNone)
+                end
             end
         end
         if not inst.free then
             gm.screen_shake(last_pVspeed, x, y)
             inst:sound_play(gm.constants.wGolemAttack1, 0.8, 3.0)
-            gm._mod_attack_fire_explosion_noparent(inst.x, inst.y, 120, 120, 0.0, damage * last_pVspeed, true,
-                gm.constants.sNone, gm.constants.sNone)
+            if not Net.is_client() then
+                gm._mod_attack_fire_explosion_noparent(inst.x, inst.y, 120, 120, 0.0, damage * last_pVspeed, true,
+                    gm.constants.sNone, gm.constants.sNone)
+            end
         end
     end)
 end)
