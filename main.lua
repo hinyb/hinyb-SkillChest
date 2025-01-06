@@ -83,13 +83,16 @@ local function init()
             data.sprite_offset_x = 2
             data.sprite_offset_y = 0
             init_cost[chest_type](self)
-            if not Net.is_client() then
-                Utils.set_and_sync_inst_from_table(self.value, {
-                    random_seed = Utils.get_random_seed()
-                })
-            end
         end)
         obj:onStep(function(self)
+            if not self.has_init then
+                self.has_init = true
+                if not Net.is_client() then
+                    Utils.set_and_sync_inst_from_table(self.value, {
+                        random_seed = Utils.get_random_seed()
+                    })
+                end
+            end
             local data = self:get_data()
             data.frame = gm.variable_global_get("_current_frame")
             if self.active == 1 then
