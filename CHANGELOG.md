@@ -1,3 +1,7 @@
+v2.1.8
+* Fix sync bugs in the new track API.
+* Add cosmic_joke modifier.
+
 v2.1.7
 * Fix fragile can't be synced correctly in multiplayer.
 * Change to new track api. Now blood_lust and perpetual_stike should trigger correctly.

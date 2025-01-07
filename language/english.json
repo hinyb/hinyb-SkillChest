@@ -83,6 +83,10 @@
         "noxp" : {
             "name" : "<y>NoXP, More Power</c>",
             "description" : "The skill <r>prevents</c> the owner from <y>leveling up</c>, but greatly <r>increases</c> its <y>damage</c>."
+        },
+        "cosmic_joke" : {
+            "name" : "<y>Cosmic Joke</c>",
+            "description" : "A mysterious power that, with a very small chance, <r>permanently transforms</c> non-boss enemies into the <y>weakest creatures</c> imaginable."
         }
     }
 }

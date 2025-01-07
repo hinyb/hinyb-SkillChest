@@ -1,21 +1,17 @@
 local blood_lust = SkillModifierManager.register_modifier("blood_lust")
 blood_lust:set_add_func(function(data, modifier_index)
-    if not Net.is_client() then
-        local num = 8
-        local inst = Instance.wrap(data.skill.parent)
-        Instance_ext.add_skill_bullet_kill(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index),
-            function()
-                inst:heal(num)
-                num = num * 1.5
-            end, function()
-                num = 8
-            end)
-    end
+    local inst = Instance.wrap(data.skill.parent)
+    local num = 8
+    Instance_ext.add_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index), "kill",
+        function()
+            inst:heal(num)
+            num = num * 1.5
+        end, function()
+            num = 8
+        end)
 end)
 blood_lust:set_remove_func(function(data, modifier_index)
-    if not Net.is_client() then
-        Instance_ext.remove_skill_captrue(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index))
-    end
+    Instance_ext.remove_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index), "kill")
 end)
 blood_lust:set_check_func(function(skill)
     return (Utils.is_non_instant_damage_skill(skill.skill_id) or Utils.is_summon_skill(skill.skill_id)) and

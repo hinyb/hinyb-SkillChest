@@ -4,7 +4,7 @@ heavy:set_add_func(function(data, modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
         return origin_value * 4
     end)
-    data:add_post_activate_callback(function(data)
+    data:add_pre_activate_callback(function(data)
         data.skill.parent.attack_speed = data.skill.parent.attack_speed / 2
         Instance_ext.add_on_anim_end(data.skill.parent, id, function(actor)
             data.skill.parent.attack_speed = data.skill.parent.attack_speed * 2
