@@ -55,34 +55,37 @@ local cache_table = {}
 local last_current_frame
 memory.dynamic_hook("event_perform_internal", "int64_t", {"CInstance*", "RValue*", "int", "int", "int"},
     Dynamic.event_perform_internal, function(ret_val, target, result, object_index, event_type, event_number)
-        if time_dilation_flag then
-            if event_type:get() == 3 then
-                local object_index_ = object_index:get()
-                if not black_list[object_index_] then
-                    if gm.object_is(object_index_, gm.constants.pEnemy) then
-                        if gm.variable_global_get("_current_frame") % 2 == 0 then
-                            return false
-                        end
-                    elseif gm.object_is(object_index_, gm.constants.pFriend) or need_to_step_list[object_index] then
-                        local current_frame = gm.variable_global_get("_current_frame")
-                        if current_frame % 2 == 0 then
-                            if current_frame ~= last_current_frame then
-                                cache_table = {}
-                                last_current_frame = current_frame
-                            end
-                            local number = event_number:get()
-                            local target_cache = cache_table[target.id]
-                            if target_cache == nil then
-                                target_cache = {}
-                                cache_table[target.id] = target_cache
-                            end
-                            if not target_cache[number] then
-                                target_cache[number] = true
-                                target:event_perform(3, number)
-                                target:event_perform(3, number)
-                            end
-                        end
-                    end
+        if not time_dilation_flag then
+            return
+        end
+        if event_type:get() ~= 3 then
+            return
+        end
+        local object_index_ = object_index:get()
+        if black_list[object_index_] then
+            return
+        end
+        if gm.object_is(object_index_, gm.constants.pEnemy) then
+            if gm.variable_global_get("_current_frame") % 2 == 0 then
+                return false
+            end
+        elseif gm.object_is(object_index_, gm.constants.pFriend) or need_to_step_list[object_index] then
+            local current_frame = gm.variable_global_get("_current_frame")
+            if current_frame % 2 == 0 then
+                if current_frame ~= last_current_frame then
+                    cache_table = {}
+                    last_current_frame = current_frame
+                end
+                local number = event_number:get()
+                local target_cache = cache_table[target.id]
+                if target_cache == nil then
+                    target_cache = {}
+                    cache_table[target.id] = target_cache
+                end
+                if not target_cache[number] then
+                    target_cache[number] = true
+                    target:event_perform(3, number)
+                    target:event_perform(3, number)
                 end
             end
         end

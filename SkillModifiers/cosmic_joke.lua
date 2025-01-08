@@ -8,6 +8,9 @@ Initialize(function()
         if cache_elite ~= -1 then
             target:elite_set_internal(target.id, cache_elite)
         end
+        if target.hp < target.maxhp then
+            target.hp = target.maxhp
+        end
     end)
     cosmic_joke_message_create = function (target)
         local message = cosmic_joke_packet:message_begin()
@@ -33,6 +36,9 @@ cosmic_joke:set_add_func(function(data, modifier_index)
                 target:instance_change(gm.constants.oLizard, true)
                 if cache_elite ~= -1 then
                     target:elite_set_internal(target.id, cache_elite)
+                end
+                if target.hp < target.maxhp then
+                    target.hp = target.maxhp
                 end
             end
         end)

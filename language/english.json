@@ -87,6 +87,10 @@
         "cosmic_joke" : {
             "name" : "<y>Cosmic Joke</c>",
             "description" : "A mysterious power that, with a very small chance, <r>permanently transforms</c> non-boss enemies into the <y>weakest creatures</c> imaginable."
+        },
+        "phantom_impact" : {
+            "name" : "<y>Phantom Impact</c>",
+            "description" : "A mysterious force expands the collision bounds of your shots, causing them become bigger, yet the bullets themselves remain untouched."
         }
     }
 }

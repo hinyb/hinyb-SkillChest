@@ -2,6 +2,7 @@ v2.1.8
 * Fix sync bugs in the new track API.
 * Add cosmic_joke modifier.
 * Improve the implementation of time dilation, so it won't decrease the FPS.
+* Add phantom_impact modifier.
 
 v2.1.7
 * Fix fragile can't be synced correctly in multiplayer.
