@@ -1,11 +1,15 @@
 -- This modifier may have many sync issues.
--- Maybe make everything stop is more interesting.
+-- I just found this is a time stop item in the game.
 local sound
-Initialize(function ()
+Initialize(function()
     sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folder_path"] .. "/sounds/clockticks.ogg")
 end)
-local during = 60
-local cooldown = 60 * 8
+--[[
+-- ev_step 3
+-- ev_draw 8
+]]
+local during = 60 * 4
+local cooldown = 60 * 15
 local time_dilation_flag = false
 local alarm
 local time_dilation = SkillModifierManager.register_modifier("time_dilation", 50)
@@ -15,12 +19,10 @@ time_dilation:set_add_func(function(data, modifier_index, item_id)
         local current_frame = gm.variable_global_get("_current_frame")
         if current_frame - last_frame >= cooldown and not time_dilation_flag then
             last_frame = current_frame
-            gm.game_set_speed(24, false)
-            gm.audio_play_sound(sound, 1.0, true)
             time_dilation_flag = true
+            gm.audio_play_sound(sound, 1.0, true)
             Alarm.destroy(alarm)
             alarm = Alarm.create(function()
-                gm.game_set_speed(60, false)
                 gm.audio_stop_sound(sound)
                 time_dilation_flag = false
             end, during)
@@ -33,27 +35,55 @@ end)
 time_dilation:set_monster_check_func(function(skill)
     return false
 end)
-local flag = true
-gm.post_script_hook(gm.constants.step_player, function(self, other, result, args)
-    if flag and time_dilation_flag then
-        flag = false
-        local self_addr = memory.get_usertype_pointer(self)
-        local other_addr = memory.get_usertype_pointer(other)
-        for _ = 1, 3 do
-            _G[Dynamic.oP_Step_1](self_addr, other_addr)
-            _G[Dynamic.oP_Step_2](self_addr, other_addr)
+local black_list = {
+    [gm.constants.oStartObjects] = true,
+    [gm.constants.oStartMenu] = true,
+    [gm.constants.oPauseMenu] = true,
+    [gm.constants.oSelectMenu] = true,
+    [gm.constants.oSelectPlayerIcon] = true,
+    [gm.constants.oBlack] = true,
+    [gm.constants.oBlackOut] = true,
+    [gm.constants.oB] = true,
+    [gm.constants.oHUD] = true,
+    [gm.constants.oInit] = true
+}
+local need_to_step_list = {
+    [gm.constants.oInit] = true,
+    [gm.constants.oDirectorControl] = true
+}
+local cache_table = {}
+local last_current_frame
+memory.dynamic_hook("event_perform_internal", "int64_t", {"CInstance*", "RValue*", "int", "int", "int"},
+    Dynamic.event_perform_internal, function(ret_val, target, result, object_index, event_type, event_number)
+        if time_dilation_flag then
+            if event_type:get() == 3 then
+                local object_index_ = object_index:get()
+                if not black_list[object_index_] then
+                    if gm.object_is(object_index_, gm.constants.pEnemy) then
+                        if gm.variable_global_get("_current_frame") % 2 == 0 then
+                            return false
+                        end
+                    elseif gm.object_is(object_index_, gm.constants.pFriend) or need_to_step_list[object_index] then
+                        local current_frame = gm.variable_global_get("_current_frame")
+                        if current_frame % 2 == 0 then
+                            if current_frame ~= last_current_frame then
+                                cache_table = {}
+                                last_current_frame = current_frame
+                            end
+                            local number = event_number:get()
+                            local target_cache = cache_table[target.id]
+                            if target_cache == nil then
+                                target_cache = {}
+                                cache_table[target.id] = target_cache
+                            end
+                            if not target_cache[number] then
+                                target_cache[number] = true
+                                target:event_perform(3, number)
+                                target:event_perform(3, number)
+                            end
+                        end
+                    end
+                end
+            end
         end
-        flag = true
-    end
-end)
-gm.post_script_hook(gm.constants.step_actor, function(self, other, result, args)
-    if flag and time_dilation_flag and self.object_index == gm.constants.oPDrone then
-        flag = false
-        local self_addr = memory.get_usertype_pointer(self)
-        local other_addr = memory.get_usertype_pointer(other)
-        for _ = 1, 3 do
-            _G[Dynamic.oPDrone_Step_2](self_addr, other_addr)
-        end
-        flag = true
-    end
-end)
+    end)

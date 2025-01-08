@@ -63,8 +63,8 @@ heavy:set_add_inst_func(function(inst, skill_params, x, y, modifier_index, damag
     inst.damage = damage
     inst.team = inst.team or 1
     inst:actor_phy_prevent_overlap()
-    local inst_warpped = Instance.wrap(inst)
-    inst_warpped:add_callback("onPostStep", "heavy", function(inst)
+    local inst_wrapped = Instance.wrap(inst)
+    inst_wrapped:add_callback("onPostStep", "heavy", function(inst)
         if not inst.free then
             return
         end
@@ -74,9 +74,9 @@ heavy:set_add_inst_func(function(inst, skill_params, x, y, modifier_index, damag
         if not Net.is_client() then
             local collisions_list, collisions_num = inst:get_collisions(gm.constants.pActorCollisionBase)
             for i = 1, collisions_num do
-                local collisions_inst_warpped = collisions_list[i]
-                if collisions_inst_warpped.object_index ~= gm.constants.oP then
-                    gm._mod_attack_fire_explosion_noparent(collisions_inst_warpped.x, collisions_inst_warpped.y, 40, 40,
+                local collisions_inst_wrapped = collisions_list[i]
+                if collisions_inst_wrapped.object_index ~= gm.constants.oP then
+                    gm._mod_attack_fire_explosion_noparent(collisions_inst_wrapped.x, collisions_inst_wrapped.y, 40, 40,
                         0.0, damage * last_pVspeed / 2, true, gm.constants.sNone, gm.constants.sNone)
                 end
             end
