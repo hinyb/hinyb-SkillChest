@@ -90,7 +90,11 @@
         },
         "phantom_impact" : {
             "name" : "<y>Phantom Impact</c>",
-            "description" : "A mysterious force expands the collision bounds of your shots, causing them become bigger, yet the bullets themselves remain untouched."
+            "description" : "A mysterious force <r>expands</c> the <y>collision bounds</c> of your shots, causing them become bigger, yet the bullets themselves remain untouched."
+        },
+        "chaos_faction" : {
+            "name" : "<y>Chaos Faction</c>",
+            "description" : "By making a pact with the Chaos Faction, your attacks will deal <y>more damage</c> but will no longer discriminate, <r>harming both enemies and allies</c>."
         }
     }
 }

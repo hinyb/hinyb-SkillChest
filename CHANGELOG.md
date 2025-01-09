@@ -3,6 +3,7 @@ v2.1.8
 * Add cosmic_joke modifier.
 * Improve the implementation of time dilation, so it won't decrease the FPS.
 * Add phantom_impact modifier.
+* Add chaos_faction modifier.
 
 v2.1.7
 * Fix fragile can't be synced correctly in multiplayer.
