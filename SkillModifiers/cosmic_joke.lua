@@ -18,7 +18,7 @@ Initialize(function()
         return message
     end
 end)
-local cosmic_joke = SkillModifierManager.register_modifier("cosmic_joke", 25)
+local cosmic_joke = SkillModifierManager.register_modifier("cosmic_joke", 50)
 cosmic_joke:set_add_func(function(data, modifier_index)
     Instance_ext.add_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index), "hit",
         function(hit_info, target)
