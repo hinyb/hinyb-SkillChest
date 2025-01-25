@@ -1,5 +1,3 @@
--- WIP: summon will use parent's team.
--- It is hard to change it dynamically.
 local chaos_faction = SkillModifierManager.register_modifier("chaos_faction")
 chaos_faction:set_add_func(function(data, modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)

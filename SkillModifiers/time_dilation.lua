@@ -53,7 +53,7 @@ local black_list = {
     [gm.constants.oBNoSpawn] = true
 }
 memory.dynamic_hook("event_perform_internal", "int64_t", {"CInstance*", "RValue*", "int", "int", "int"},
-    Dynamic.event_perform_internal, function(ret_val, target, result, object_index, event_type, event_number)
+    Dynamic.event_perform_internal_ptr, function(ret_val, target, result, object_index, event_type, event_number)
         if not time_dilation_flag then
             return
         end
