@@ -2,6 +2,17 @@ mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 mods["hinyb-Dropability"].auto()
 
 require("Utils.lua")
+require("SkillModifier")
+require("SkillModifierData")
+require("SkillModifierManager")
+require("skillPickupCompat")
+
+mods["MGReturns-ENVY"].auto()
+envy = mods["MGReturns-ENVY"]
+public_things = {
+    ["SkillModifierManager"] = SkillModifierManager
+} -- Maybe using a wrong way
+require("./envy_setup")
 
 local names = path.get_files(_ENV["!plugins_mod_folder_path"] .. "/SkillModifiers")
 for _, name in ipairs(names) do
