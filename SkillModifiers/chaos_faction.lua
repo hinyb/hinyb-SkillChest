@@ -4,7 +4,7 @@ chaos_faction:set_add_func(function(data, modifier_index)
         return origin_value * 1.75
     end)
     local actor = data.skill.parent
-    if not actor.is_local then
+    if actor.is_local == 0 then
         return
     end
     Instance_ext.add_skill_instance_captrue_local_with_filter(actor, data.skill.slot_index, data:get_id(modifier_index),
@@ -23,7 +23,7 @@ chaos_faction:set_add_func(function(data, modifier_index)
 end)
 chaos_faction:set_remove_func(function(data, modifier_index)
     local actor = data.skill.parent
-    if not actor.is_local then
+    if actor.is_local == 0 then
         return
     end
     Instance_ext.remove_skill_instance_captrue(actor, data.skill.slot_index, data:get_id(modifier_index))

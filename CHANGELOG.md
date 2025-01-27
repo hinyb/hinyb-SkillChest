@@ -1,3 +1,6 @@
+v2.1.9
+* Fix some sync bugs.
+
 v2.1.8
 * Fix sync bugs in the new track API.
 * Add cosmic_joke modifier.

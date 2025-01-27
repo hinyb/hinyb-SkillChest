@@ -4,7 +4,7 @@ void_power:set_add_func(function(data, modifier_index)
         return origin_value * 2 ^ Utils.get_empty_skill_num(data.skill.parent)
     end)
     local actor = data.skill.parent
-    if not actor.is_local then
+    if actor.is_local == 0 then
         return
     end
     Instance_ext.add_callback(data.skill.parent, "post_local_drop", data:get_id(), function()
@@ -16,7 +16,7 @@ void_power:set_add_func(function(data, modifier_index)
 end)
 void_power:set_remove_func(function(data, modifier_index)
     local actor = data.skill.parent
-    if not actor.is_local then
+    if actor.is_local == 0 then
         return
     end
     Instance_ext.remove_callback(data.skill.parent, "post_local_drop", data:get_id())

@@ -93,7 +93,7 @@ Initialize(function()
         end)
     end)
     skill:onPostStep(function(actor, struct, index)
-        if not actor.is_local then
+        if actor.is_local == 0 then
             return
         end
         if struct.active ~= 1.0 then
