@@ -93,7 +93,7 @@ Initialize(function()
         end)
     end)
     skill:onPostStep(function(actor, struct, index)
-        if actor.is_local == 0 then
+        if not gm.bool(actor.is_local) then
             return
         end
         if struct.active ~= 1.0 then
@@ -139,7 +139,8 @@ Initialize(function()
     gm.surface_free(my_surface)
 end)
 
-local teleport = SkillModifierManager.register_modifier("teleport", 124)
+-- found this modifier has some sync issues.
+local teleport = SkillModifierManager.register_modifier("teleport", 0)
 teleport:set_add_func(function(data, modifier_index, teleport_id)
     data:add_post_local_drop_callback(function(actor, skill_params)
         gm.actor_skill_set(actor, skill_params.slot_index, skill.value)

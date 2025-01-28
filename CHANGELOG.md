@@ -1,5 +1,6 @@
 v2.1.9
 * Fix some sync bugs.
+* Temporarily remove the teleport modifier due to sync issues.
 
 v2.1.8
 * Fix sync bugs in the new track API.

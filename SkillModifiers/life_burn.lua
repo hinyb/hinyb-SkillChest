@@ -4,7 +4,7 @@ life_burn:set_check_func(function(skill)
 end)
 life_burn:set_add_func(function(data)
     local actor = data.skill.parent
-    if actor.is_local == 0 then
+    if not gm.bool(actor.is_local) then
         return
     end
     local num = Utils.get_handy_drone_type(data.skill.skill_id) ~= nil and 25 or data.skill.cooldown_base / 60 * 5

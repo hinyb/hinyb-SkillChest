@@ -148,7 +148,7 @@ local function init()
                 end
             elseif self.active == 3 then
                 if self.activator then
-                    if self.activator.is_local == 1 then
+                    if gm.bool(self.activator.is_local) then
                         local skill = Utils.wrap_skill(data.skill_id)
                         SkillPickup.skill_create(self.x + 8, self.y - 10, skill_modifier[chest_type](skill))
                     end

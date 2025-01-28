@@ -9,7 +9,7 @@ fragile:set_add_func(function(data)
         return origin_value * 10
     end)
     local actor = data.skill.parent
-    if actor.is_local == 0 then
+    if not gm.bool(actor.is_local) then
         return
     end
     data:add_pre_activate_callback(function(data)
