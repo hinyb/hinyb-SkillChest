@@ -1,5 +1,4 @@
-SkillPickup.add_post_local_drop_func(function(player, skill_params)
-    local skill = gm.array_get(player.skills, skill_params.slot_index).active_skill
+SkillPickup.add_pre_local_drop_after_diff_func(function(player, skill)
     if skill.ctm_arr_modifiers then
         local ctm_arr_modifiers = Array.wrap(skill.ctm_arr_modifiers)
         for i = 0, ctm_arr_modifiers:size() - 1 do

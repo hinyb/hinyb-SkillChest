@@ -139,8 +139,7 @@ Initialize(function()
     gm.surface_free(my_surface)
 end)
 
--- found this modifier has some sync issues.
-local teleport = SkillModifierManager.register_modifier("teleport", 0)
+local teleport = SkillModifierManager.register_modifier("teleport", 124)
 teleport:set_add_func(function(data, modifier_index, teleport_id)
     data:add_post_local_drop_callback(function(actor, skill_params)
         gm.actor_skill_set(actor, skill_params.slot_index, skill.value)
