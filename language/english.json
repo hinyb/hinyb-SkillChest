@@ -96,5 +96,11 @@
             "name" : "<y>Chaos Faction</c>",
             "description" : "By making a pact with the Chaos Faction, your attacks will deal <y>more damage</c> but will no longer discriminate, <r>harming both enemies and allies</c>."
         }
+    },
+    "skill" : {
+        "teleport" : {
+            "name" : "Teleport",
+            "description" : "Teleport to the bind skill."
+        }
     }
 }

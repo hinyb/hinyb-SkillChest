@@ -17,7 +17,6 @@ local function find_teleport_target(teleport_id)
     end
 end
 local need_process = 120
-local teleport_sprite
 local teleport_sprite_list = {}
 local function calculate_vertex(angle, l)
     local r = l / 2
@@ -53,6 +52,31 @@ local function get_teleport_name(teleport_id)
 end
 local teleport_add_message, teleport_remove_message
 Initialize(function()
+    local sprite = Resources.sprite_load("hinyb", "entropy",
+        _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport_skill.png")
+    -- I suck at drawing, so I just use AI-generated paintings.
+    local teleport_sprite = Resources.sprite_load("hinyb", "teleport",
+        _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport.png", 0, 65, 67)
+    local my_surface = gm.surface_create(128, 128)
+    gm.surface_set_target(my_surface)
+    for process = 1, need_process do
+        local angle = process / need_process * 360
+        gm.draw_clear_alpha(Color.BLACK, 0)
+        gm.draw_set_color(Color.WHITE)
+        gm.draw_primitive_begin(6)
+        local res = calculate_vertex(angle, 128)
+        for i = 1, #res do
+            gm.draw_vertex(res[i][1], res[i][2])
+        end
+        gm.draw_primitive_end();
+        local mask_sprite = gm.sprite_create_from_surface(my_surface, 0, 0, 128, 128, false, false, 64, 64)
+        local new_sprite = gm.sprite_duplicate(teleport_sprite)
+        gm.sprite_set_alpha_from_sprite(new_sprite, mask_sprite)
+        teleport_sprite_list[process] = new_sprite
+        gm.sprite_delete(mask_sprite)
+    end
+    gm.surface_reset_target()
+    gm.surface_free(my_surface)
     teleport_add_message = Utils.create_packet(function(player, actor, slot_index, teleport_id)
         gm.actor_skill_set(actor, slot_index, skill.value)
         local new_skill = gm.array_get(actor.skills, slot_index).active_skill
@@ -63,16 +87,12 @@ Initialize(function()
         local id = get_teleport_name(teleport_id)
         actor_:remove_callback(id)
     end, {Utils.param_type.Instance, Utils.param_type.int})
-    local sprite = Resources.sprite_load("hinyb", "entropy",
-        _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport_skill.png")
-    -- I suck at drawing, so I just use AI-generated paintings.
-    teleport_sprite = Resources.sprite_load("hinyb", "teleport",
-        _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport.png", 0, 65, 67)
     skill = Skill.new("hinyb", "teleport")
     skill:set_skill_icon(sprite, 0)
     skill:set_skill_properties(0, 4 * 60)
     skill:set_skill_stock(1, 1, true, 1)
     skill:set_skill_settings(true, false, 3, false, false, true, true, false)
+
     skill:onActivate(function(actor, struct, index)
         struct.active = 1.0
         struct.process = 0
@@ -80,8 +100,11 @@ Initialize(function()
         actor:add_callback("onPreDraw", id, function()
             struct.freeze_cooldown(struct, struct)
             struct.process = struct.process + 1
-            local angle = struct.process / need_process * 360
-            gm.draw_sprite(teleport_sprite_list[angle], 0, actor.x, actor.y)
+            if teleport_sprite_list[struct.process] then
+                gm.draw_sprite(teleport_sprite_list[struct.process], 0, actor.x, actor.y)
+            else
+                log.warning("can't find teleport sprite")
+            end
             if struct.process == need_process then
                 struct.active = 0.0
                 local target = find_teleport_target(struct.teleport_id)
@@ -92,14 +115,15 @@ Initialize(function()
             end
         end)
     end)
-    skill:onPostStep(function(actor, struct, index)
+    skill:onStep(function(actor, struct, index)
         if not gm.bool(actor.is_local) then
             return
         end
         if struct.active ~= 1.0 then
             return
         end
-        if gm.call("gml_Script_control", actor.value, actor.value, "skill" .. Utils.to_string_with_floor(index + 1), false) then
+        if gm.call("gml_Script_control", actor.value, actor.value, "skill" .. Utils.to_string_with_floor(index + 1),
+            false) then
             return
         end
         struct.active = 0.0
@@ -117,26 +141,6 @@ Initialize(function()
     SkillPickup.add_skill_check_func(function(actor, skill_)
         return skill_.skill_id ~= skill.value
     end)
-    local my_surface = gm.surface_create(128, 128)
-    gm.surface_set_target(my_surface)
-    for process = 1, need_process do
-        local angle = process / need_process * 360
-        gm.draw_clear_alpha(Color.BLACK, 0)
-        gm.draw_set_color(Color.WHITE)
-        gm.draw_primitive_begin(6)
-        local res = calculate_vertex(angle, 128)
-        for i = 1, #res do
-            gm.draw_vertex(res[i][1], res[i][2])
-        end
-        gm.draw_primitive_end();
-        local mask_sprite = gm.sprite_create_from_surface(my_surface, 0, 0, 128, 128, false, false, 64, 64)
-        local new_sprite = gm.sprite_duplicate(teleport_sprite)
-        gm.sprite_set_alpha_from_sprite(new_sprite, mask_sprite)
-        teleport_sprite_list[angle] = new_sprite
-        gm.sprite_delete(mask_sprite)
-    end
-    gm.surface_reset_target()
-    gm.surface_free(my_surface)
 end)
 
 local teleport = SkillModifierManager.register_modifier("teleport", 124)
