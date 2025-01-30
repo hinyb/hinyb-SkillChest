@@ -1,3 +1,6 @@
+v2.1.10
+* Update a small api.
+
 v2.1.9
 * Fix some sync bugs.
 

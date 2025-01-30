@@ -223,8 +223,7 @@ Initialize(function()
         local params = {...}
         sync_message:write_byte(#params)
         for i = 1, #params do
-            -- write_double
-            sync_message:write_float(params[i])
+            sync_message:write_double(params[i])
         end
         return sync_message
     end
