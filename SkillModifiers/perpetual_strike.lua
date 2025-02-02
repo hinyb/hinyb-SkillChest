@@ -25,7 +25,6 @@ perpetual_strike:set_remove_func(function(data, modifier_index)
     Instance_ext.remove_skill_bullet_callback(actor, data.skill.slot_index, data:get_id(modifier_index), "hit")
 end)
 perpetual_strike:set_check_func(function(skill)
-    return (Utils.is_non_instant_damage_skill(skill.skill_id) or Utils.is_summon_skill(skill.skill_id)) and
-               Utils.is_damage_skill(skill.skill_id)
+    return Utils.is_can_track_skill(skill.skill_id) and Utils.is_damage_skill(skill.skill_id)
 end)
 
