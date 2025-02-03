@@ -18,7 +18,7 @@ end
 SkillModifierManager.get_modifier = function(modifier_name)
     local modifier = modifier_pool[modifier_name]
     if not modifier then
-        log.warning("Try to get a non-existent modifier", modifier_name)
+        log.error("Try to get a non-existent modifier", modifier_name)
     end
     return modifier
 end
