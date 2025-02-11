@@ -20,9 +20,6 @@ Initialize(function()
 end)
 local cosmic_joke = SkillModifierManager.register_modifier("cosmic_joke", 50)
 cosmic_joke:set_add_func(function(data, modifier_index)
-    if Net.is_client() then
-        return
-    end
     InstanceExtManager.add_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index),
         "hit", function(hit_info, target)
             if target.object_index == gm.constants.oLizard then
@@ -47,9 +44,6 @@ cosmic_joke:set_add_func(function(data, modifier_index)
         end)
 end)
 cosmic_joke:set_remove_func(function(data, modifier_index)
-    if Net.is_client() then
-        return
-    end
     InstanceExtManager.remove_skill_bullet_callback(data.skill.parent, data.skill.slot_index,
         data:get_id(modifier_index), "hit")
 end)
