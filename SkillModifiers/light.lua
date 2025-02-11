@@ -7,7 +7,7 @@ light:set_add_func(function(data, modifier_index)
     data:add_post_activate_callback(function(data)
         local cache_attack_speed = data.skill.parent.attack_speed
         data.skill.parent.attack_speed = cache_attack_speed * 2
-        Instance_ext.add_on_anim_end(data.skill.parent, id, function(actor)
+        InstanceExtManager.add_on_anim_end(data.skill.parent, id, function(actor)
             actor.attack_speed = cache_attack_speed
         end)
     end)

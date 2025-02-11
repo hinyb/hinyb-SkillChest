@@ -20,7 +20,7 @@ Initialize(function()
 end)
 local cosmic_joke = SkillModifierManager.register_modifier("cosmic_joke", 50)
 cosmic_joke:set_add_func(function(data, modifier_index)
-    Instance_ext.add_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index), "hit",
+    InstanceExtManager.add_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index), "hit",
         function(hit_info, target)
             if target.object_index == gm.constants.oLizard then
                 return
@@ -44,7 +44,7 @@ cosmic_joke:set_add_func(function(data, modifier_index)
         end)
 end)
 cosmic_joke:set_remove_func(function(data, modifier_index)
-    Instance_ext.remove_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index), "hit")
+    InstanceExtManager.remove_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index), "hit")
 end)
 cosmic_joke:set_check_func(function(skill)
     return Utils.is_can_track_skill(skill.skill_id) and Utils.is_damage_skill(skill.skill_id)

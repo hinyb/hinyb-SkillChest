@@ -167,6 +167,7 @@ teleport:set_default_params_func(function()
     total_teleport_num = total_teleport_num + 1
     return total_teleport_num
 end)
-gm.post_script_hook(gm.constants.run_create, function(self, other, result, args)
+HookSystem.clean_hook()
+HookSystem.post_script_hook(gm.constants.run_create, function(self, other, result, args)
     total_teleport_num = 0.0
 end)

@@ -1,3 +1,4 @@
+HookSystem.clean_hook()
 local modifier_pool = {}
 local default_weight = 500
 local skills_data = {}
@@ -153,7 +154,7 @@ SkillModifierManager.get_random_modifier_name_with_monster_check = function(skil
     return random_modifier.monster_check_func(skill) and random_modifier_name or
                SkillModifierManager.get_random_modifier_name_with_monster_check(skill)
 end
-gm.post_script_hook(gm.constants.run_destroy, function(self, other, result, args)
+HookSystem.post_script_hook(gm.constants.run_destroy, function(self, other, result, args)
     skills_data = {}
 end)
 Initialize(function()

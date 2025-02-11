@@ -4,10 +4,6 @@ local sound
 Initialize(function()
     sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folder_path"] .. "/sounds/clockticks.ogg")
 end)
---[[
--- ev_step 3
--- ev_draw 8
-]]
 local during = 60 * 4
 local cooldown = 60 * 15
 local time_dilation_flag = false
@@ -52,21 +48,21 @@ local black_list = {
     [gm.constants.oRope] = true,
     [gm.constants.oBNoSpawn] = true
 }
-memory.dynamic_hook("event_perform_internal", "int64_t", {"CInstance*", "RValue*", "int", "int", "int"},
-    Dynamic.event_perform_internal_ptr, function(ret_val, target, result, object_index, event_type, event_number)
-        if not time_dilation_flag then
-            return
+HookSystem.clean_hook()
+HookSystem.add_special_hook("pre_Perform_Event_Object", function (ret_val, target, result, object_index, event_type, event_number)
+    if not time_dilation_flag then
+        return
+    end
+    if event_type:get() ~= 3 then
+        return
+    end
+    local object_index_ = object_index:get()
+    if black_list[object_index_] then
+        return
+    end
+    if gm.object_is(object_index_, gm.constants.pEnemy) then
+        if gm.variable_global_get("_current_frame") % 4 ~= 0 then
+            return false
         end
-        if event_type:get() ~= 3 then
-            return
-        end
-        local object_index_ = object_index:get()
-        if black_list[object_index_] then
-            return
-        end
-        if gm.object_is(object_index_, gm.constants.pEnemy) then
-            if gm.variable_global_get("_current_frame") % 4 ~= 0 then
-                return false
-            end
-        end
-    end)
+    end
+end)

@@ -5,7 +5,7 @@ Initialize(function()
 end)
 local totem_of_undying = SkillModifierManager.register_modifier("totem_of_undying", 50)
 totem_of_undying:set_add_func(function(data, modifier_index)
-    Instance_ext.add_callback(data.skill.parent, "pre_actor_death_after_hippo", data:get_id(), function(inst)
+    InstanceExtManager.add_callback(data.skill.parent, "pre_actor_death_after_hippo", data:get_id(), function(inst)
         if inst.hp <= 0 then
             inst.hp = inst.maxhp / 2
             SkillModifierManager.clear_and_set_skill_sync(inst, data.skill.slot_index, 0)
@@ -16,7 +16,7 @@ totem_of_undying:set_add_func(function(data, modifier_index)
     end)
 end)
 totem_of_undying:set_remove_func(function(data, modifier_index)
-    Instance_ext.remove_callback(data.skill.parent, "pre_actor_death_after_hippo", data:get_id())
+    InstanceExtManager.remove_callback(data.skill.parent, "pre_actor_death_after_hippo", data:get_id())
 end)
 totem_of_undying:set_check_func(function(skill)
     return SkillModifierManager.count_modifier(skill, "totem_of_undying") < 1

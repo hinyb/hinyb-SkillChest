@@ -1,3 +1,4 @@
+HookSystem.clean_hook()
 SkillModifierData = {}
 SkillModifierData.__index = SkillModifierData
 -- may need improve 
@@ -143,7 +144,7 @@ SkillPickup.add_post_local_drop_func(function(actor, skill_params)
     end
     post_drop_callback = {}
 end)
-gm.post_script_hook(102397, function(self, other, result, args)
+HookSystem.post_script_hook(102397, function(self, other, result, args)
     local skill = memory.resolve_pointer_to_type(memory.get_usertype_pointer(self), "YYObjectBase*")
     if skill.ctm_arr_modifiers ~= nil then
         local modifiers = Array.wrap(skill.ctm_arr_modifiers)
@@ -162,7 +163,7 @@ gm.post_script_hook(102397, function(self, other, result, args)
     end
 end)
 
-gm.pre_script_hook(gm.constants.skill_activate, function(self, other, result, args)
+HookSystem.pre_script_hook(gm.constants.skill_activate, function(self, other, result, args)
     local skill = gm.array_get(self.skills, args[1].value).active_skill
     if skill.ctm_arr_modifiers ~= nil then
         local modifiers = Array.wrap(skill.ctm_arr_modifiers)
@@ -183,7 +184,7 @@ gm.pre_script_hook(gm.constants.skill_activate, function(self, other, result, ar
     end
 end)
 
-gm.post_script_hook(gm.constants.skill_activate, function(self, other, result, args)
+HookSystem.post_script_hook(gm.constants.skill_activate, function(self, other, result, args)
     local skill = gm.array_get(self.skills, args[1].value).active_skill
     if skill.ctm_arr_modifiers ~= nil then
         local modifiers = Array.wrap(skill.ctm_arr_modifiers)
@@ -199,7 +200,7 @@ gm.post_script_hook(gm.constants.skill_activate, function(self, other, result, a
         end
     end
 end)
-gm.post_script_hook(102400, function(self, other, result, args)
+HookSystem.post_script_hook(102400, function(self, other, result, args)
     local skill = memory.resolve_pointer_to_type(memory.get_usertype_pointer(self), "YYObjectBase*")
     if skill.ctm_arr_modifiers ~= nil then
         local modifiers = Array.wrap(skill.ctm_arr_modifiers)
@@ -216,7 +217,7 @@ gm.post_script_hook(102400, function(self, other, result, args)
     end
 end)
 
-gm.post_script_hook(102401, function(self, other, result, args)
+HookSystem.post_script_hook(102401, function(self, other, result, args)
     local skill = memory.resolve_pointer_to_type(memory.get_usertype_pointer(self), "YYObjectBase*")
     if skill.ctm_arr_modifiers ~= nil then
         local modifiers = Array.wrap(skill.ctm_arr_modifiers)
@@ -233,7 +234,7 @@ gm.post_script_hook(102401, function(self, other, result, args)
     end
 end)
 
-gm.pre_script_hook(gm.constants.skill_can_activate, function(self, other, result, args)
+HookSystem.pre_script_hook(gm.constants.skill_can_activate, function(self, other, result, args)
     local skill = gm.array_get(self.skills, args[1].value).active_skill
     if skill.ctm_arr_modifiers ~= nil then
         local modifiers = Array.wrap(skill.ctm_arr_modifiers)
@@ -253,7 +254,7 @@ gm.pre_script_hook(gm.constants.skill_can_activate, function(self, other, result
         return flag
     end
 end)
-gm.post_script_hook(gm.constants.skill_can_activate, function(self, other, result, args)
+HookSystem.post_script_hook(gm.constants.skill_can_activate, function(self, other, result, args)
     local skill = gm.array_get(self.skills, args[1].value).active_skill
     if skill.ctm_arr_modifiers ~= nil then
         local modifiers = Array.wrap(skill.ctm_arr_modifiers)

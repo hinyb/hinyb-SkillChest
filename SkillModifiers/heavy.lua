@@ -6,7 +6,7 @@ heavy:set_add_func(function(data, modifier_index)
     end)
     data:add_pre_activate_callback(function(data)
         data.skill.parent.attack_speed = data.skill.parent.attack_speed / 2
-        Instance_ext.add_on_anim_end(data.skill.parent, id, function(actor)
+        InstanceExtManager.add_on_anim_end(data.skill.parent, id, function(actor)
             data.skill.parent.attack_speed = data.skill.parent.attack_speed * 2
         end)
     end)
