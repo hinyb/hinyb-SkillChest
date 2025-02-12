@@ -1,6 +1,6 @@
 v2.2.0
-* Some small changes.
 * Fix perpetual_strike can't be removed correctly.
+* API update.
 
 v2.1.11
 * Some small changes.
