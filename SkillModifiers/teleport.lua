@@ -135,12 +135,7 @@ Initialize(function()
             teleport_remove_message(Utils.packet_type.forward, actor, struct.teleport_id):send_to_host()
         end
     end)
-    SkillPickup.add_skill_override_check_func(function(actor, skill_)
-        return skill_.skill_id == skill.value
-    end)
-    SkillPickup.add_skill_check_func(function(actor, skill_)
-        return skill_.skill_id ~= skill.value
-    end)
+    Utils.add_random_skill_blacklist(skill.value)
 end)
 
 local teleport = SkillModifierManager.register_modifier("teleport", 124)

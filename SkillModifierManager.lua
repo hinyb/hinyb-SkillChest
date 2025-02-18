@@ -112,7 +112,7 @@ SkillModifierManager.clear_modifier_data = function(skill, modifier_index)
     skills_data[memory.get_usertype_pointer(skill)][modifier_index] = nil
 end
 SkillModifierManager.get_random_modifier_name = function()
-    local rand = Utils.get_random(0, total_weight)
+    local rand = math.random(0, total_weight)
     local sum_weight = 0
     for name, modifier in pairs(modifier_pool) do
         sum_weight = sum_weight + modifier.weight

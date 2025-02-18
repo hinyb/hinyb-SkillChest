@@ -28,7 +28,7 @@ cosmic_joke:set_add_func(function(data, modifier_index)
             if target.boss_drop_item ~= 0.0 then
                 return
             end
-            if Utils.get_random() < 0.05 then
+            if math.random() < 0.05 then
                 if Net.is_host() then
                     cosmic_joke_message_create(target):send_to_all()
                 end

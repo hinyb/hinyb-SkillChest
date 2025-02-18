@@ -43,7 +43,7 @@ register_flux("cooldown", function(skill)
         skill.cooldown * 0.2)) - skill.cooldown
 end)
 register_flux("slot_index", function()
-    return Utils.get_random(0, 3)
+    return math.random(0, 3)
 end)
 SkillPickup.add_pre_create_func(function(skill_params)
     if skill_params.ctm_arr_modifiers then

@@ -30,17 +30,17 @@ local function init()
         local num = 0
         while true do
             if num == 1 then
-                if Utils.get_random() > 0.6 then
+                if math.random() > 0.6 then
                     break
                 end
             end
             if num == 2 then
-                if Utils.get_random() > 0.4 then
+                if math.random() > 0.4 then
                     break
                 end
             end
             if num > 2 then
-                if Utils.get_random() > 0.3 then
+                if math.random() > 0.3 then
                     break
                 end
             end
@@ -53,7 +53,7 @@ local function init()
         local num = 0
         while true do
             if num > 1 then
-                if Utils.get_random() > 0.1 then
+                if math.random() > 0.1 then
                     break
                 end
             end

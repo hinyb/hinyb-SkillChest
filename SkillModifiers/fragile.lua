@@ -13,7 +13,7 @@ fragile:set_add_func(function(data)
         return
     end
     data:add_pre_activate_callback(function(data)
-        if Utils.get_random() < 0.02 then
+        if math.random() < 0.02 then
             SkillModifierManager.clear_and_set_skill_sync(data.skill.parent, data.skill.slot_index, 0)
             gm.sound_play_at(sound, 1.0, 1.0, data.skill.parent.x, data.skill.parent.y, 1.0)
         end
