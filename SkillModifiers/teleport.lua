@@ -1,4 +1,5 @@
-local skill
+-- still terrible
+local teleport_skill
 local function find_teleport_target(teleport_id)
     local insts = Instance.find_all(SkillPickup.skillPickup_object_index)
     for i = 1, #insts do
@@ -51,6 +52,8 @@ local function get_teleport_name(teleport_id)
     return "teleport" .. Utils.to_string_with_floor(teleport_id)
 end
 local teleport_add_message, teleport_remove_message
+local teleport_add_sync
+local teleport_remove_sync
 Initialize(function()
     local sprite = Resources.sprite_load("hinyb", "entropy",
         _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport_skill.png")
@@ -77,23 +80,28 @@ Initialize(function()
     end
     gm.surface_reset_target()
     gm.surface_free(my_surface)
-    teleport_add_message = Utils.create_packet(function(player, actor, slot_index, teleport_id)
-        gm.actor_skill_set(actor, slot_index, skill.value)
-        local new_skill = gm.array_get(actor.skills, slot_index).active_skill
-        new_skill.teleport_id = teleport_id
-    end, {Utils.param_type.Instance, Utils.param_type.int, Utils.param_type.int})
-    teleport_remove_message = Utils.create_packet(function(player, actor, teleport_id)
-        local actor_ = Instance.wrap(actor)
-        local id = get_teleport_name(teleport_id)
-        actor_:remove_callback(id)
-    end, {Utils.param_type.Instance, Utils.param_type.int})
-    skill = Skill.new("hinyb", "teleport")
-    skill:set_skill_icon(sprite, 0)
-    skill:set_skill_properties(0, 4 * 60)
-    skill:set_skill_stock(1, 1, true, 1)
-    skill:set_skill_settings(true, false, 3, false, false, true, true, false)
 
-    skill:onActivate(function(actor, struct, index)
+    teleport_skill = Skill.new("hinyb", "teleport")
+    teleport_add_sync = Utils.create_sync_func([[
+    gm.actor_skill_set(a1, a2, teleport_skill_id)
+    local new_skill = gm.array_get(a1.skills, a2).active_skill
+    new_skill.teleport_id = a3
+]], {Utils.param_type.instance, Utils.param_type.ushort, Utils.param_type.double}, {
+        teleport_skill_id = teleport_skill.value
+    })
+    teleport_remove_sync = Utils.create_sync_func([[
+        local actor_ = Instance.wrap(a1)
+        local id = get_teleport_name(a2)
+        actor_:remove_callback(id)
+    ]], {Utils.param_type.instance, Utils.param_type.double}, {
+        get_teleport_name = get_teleport_name
+    })
+    teleport_skill:set_skill_icon(sprite, 0)
+    teleport_skill:set_skill_properties(0, 4 * 60)
+    teleport_skill:set_skill_stock(1, 1, true, 1)
+    teleport_skill:set_skill_settings(true, false, 3, false, false, true, true, false)
+
+    teleport_skill:onActivate(function(actor, struct, index)
         struct.active = 1.0
         struct.process = 0
         local id = get_teleport_name(struct.teleport_id)
@@ -115,50 +123,40 @@ Initialize(function()
             end
         end)
     end)
-    skill:onStep(function(actor, struct, index)
+    teleport_skill:onStep(function(actor, struct, index)
         if not gm.bool(actor.is_local) then
             return
         end
         if struct.active ~= 1.0 then
             return
         end
-        if gm.call("gml_Script_control", actor.value, actor.value, "skill" .. Utils.to_string_with_floor(index + 1),
-            false) then
+        if gm.call("gml_Script_control", actor.value, actor.value,
+            "teleport_skill" .. Utils.to_string_with_floor(index + 1), false) then
             return
         end
         struct.active = 0.0
-        local id = get_teleport_name(struct.teleport_id)
-        actor:remove_callback(id)
-        if Net.is_host() then
-            teleport_remove_message(Utils.packet_type.not_forward, actor, struct.teleport_id):send_to_all()
-        elseif Net.is_client() then
-            teleport_remove_message(Utils.packet_type.forward, actor, struct.teleport_id):send_to_host()
-        end
+        teleport_remove_sync(actor.value, struct.teleport_id)
     end)
-    Utils.add_random_skill_blacklist(skill.value)
+    Utils.add_random_skill_blacklist(teleport_skill.value)
 end)
 
 local teleport = SkillModifierManager.register_modifier("teleport", 124)
 teleport:set_add_func(function(data, modifier_index, teleport_id)
     data:add_post_local_drop_callback(function(actor, skill_params)
-        gm.actor_skill_set(actor, skill_params.slot_index, skill.value)
-        local new_skill = gm.array_get(actor.skills, skill_params.slot_index).active_skill
-        new_skill.teleport_id = teleport_id
-        if Net.is_host() then
-            teleport_add_message(Utils.packet_type.not_forward, actor, skill_params.slot_index, teleport_id):send_to_all()
-        elseif Net.is_client() then
-            teleport_add_message(Utils.packet_type.forward, actor, skill_params.slot_index, teleport_id):send_to_host()
-        end
+        teleport_add_sync(actor, skill_params.slot_index, teleport_id)
     end)
 end)
-teleport:set_check_func(function(skill)
-    return SkillModifierManager.count_modifier(skill, "teleport") < 1
+teleport:set_check_func(function(teleport_skill)
+    return SkillModifierManager.count_modifier(teleport_skill, "teleport") < 1
 end)
-teleport:set_monster_check_func(function(skill)
+teleport:set_monster_check_func(function(teleport_skill)
     return false
 end)
 local total_teleport_num = 0.0 -- There must be a double because all numbers in gamemaker are stored as double.
 teleport:set_default_params_func(function()
+    if Net.is_client() then
+        log.warning("Teleport modifier should be initialized only on the host")
+    end
     total_teleport_num = total_teleport_num + 1
     return total_teleport_num
 end)
