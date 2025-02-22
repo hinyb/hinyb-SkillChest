@@ -60,7 +60,7 @@ HookSystem.add_special_hook("pre_Perform_Event_Object", function (ret_val, targe
     if black_list[object_index_] then
         return
     end
-    if gm.object_is(object_index_, gm.constants.pEnemy) then
+    if gm.object_is_ancestor(object_index_, gm.constants.pEnemy) == 1.0 then
         if gm.variable_global_get("_current_frame") % 4 ~= 0 then
             return false
         end
