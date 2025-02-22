@@ -2,9 +2,6 @@ local perpetual_strike = SkillModifierManager.register_modifier("perpetual_strik
 local max_stack = 5
 perpetual_strike:set_add_func(function(data, modifier_index)
     local actor = data.skill.parent
-    if not gm.bool(actor.is_local) then
-        return
-    end
     local target_id, stacks
     InstanceExtManager.add_skill_bullet_fake_hit_actually_attack(actor, data.skill.slot_index, data:get_id(modifier_index),
         function(attack_info, target)
@@ -19,9 +16,6 @@ perpetual_strike:set_add_func(function(data, modifier_index)
 end)
 perpetual_strike:set_remove_func(function(data, modifier_index)
     local actor = data.skill.parent
-    if not gm.bool(actor.is_local) then
-        return
-    end
     InstanceExtManager.remove_skill_bullet_callback(actor, data.skill.slot_index, data:get_id(modifier_index), "attack")
 end)
 perpetual_strike:set_check_func(function(skill)

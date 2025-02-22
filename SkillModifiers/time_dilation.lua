@@ -53,7 +53,7 @@ HookSystem.add_special_hook("pre_Perform_Event_Object", function (ret_val, targe
     if not time_dilation_flag then
         return
     end
-    if event_type:get() ~= 3 then
+    if event_type ~= 3 then
         return
     end
     local object_index_ = object_index:get()

@@ -65,11 +65,12 @@ local function init()
     end} -- May need more modifiers
     local sprite_color = {gm.make_color_rgb(240, 240, 120), gm.make_color_rgb(240, 120, 120)}
     for chest_type = 1, 2 do
-        obj = Object.new("hinyb", "oSkillChest" .. chest_type, Object.PARENT.interactable)
+        local name = "oSkillChest" .. chest_type
+        obj = Object.new("hinyb", name, Object.PARENT.interactable)
         obj.obj_sprite = gm.constants.sChest4
 
         -- Create Interactable Card
-        local card = Interactable_Card.new("hinyb", "oSkillChest" .. chest_type)
+        local card = Interactable_Card.new("hinyb", name)
         card.object_id = obj
         card.spawn_with_sacrifice = true
         card.spawn_cost = spawn_cost[chest_type]

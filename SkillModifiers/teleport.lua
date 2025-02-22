@@ -1,7 +1,7 @@
 -- still terrible
 local teleport_skill
 local function find_teleport_target(teleport_id)
-    local insts = Instance.find_all(SkillPickup.skillPickup_object_index)
+    local insts = Instance.find_all(gm.constants.oSkillPickup)
     for i = 1, #insts do
         local inst = insts[i].value
         if inst.ctm_arr_modifiers ~= nil then
