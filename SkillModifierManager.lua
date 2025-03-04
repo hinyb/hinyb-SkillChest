@@ -1,3 +1,4 @@
+-- maybe I need rewrite the modifier_data
 HookSystem.clean_hook()
 local modifier_pool = {}
 local default_weight = 500
@@ -67,7 +68,12 @@ end
 SkillModifierManager.remove_modifier_local = function(skill, modifier_index)
     local data = SkillModifierManager.get_modifier_data(skill, modifier_index)
     local modifier = SkillModifierManager.get_modifier(data.modifier_name)
-    modifier.remove_func(data, modifier_index)
+    local modifier_data = Array.wrap(skill.ctm_arr_modifiers):get(modifier_index)
+    local params = {}
+    for i = 1, modifier_data:size() - 1 do
+        params[#params+1] = modifier_data:get(i)
+    end
+    modifier.remove_func(data, modifier_index, table.unpack(params))
     SkillModifierManager.clear_modifier_data(skill, modifier_index)
 end
 local remove_modifier_message_create

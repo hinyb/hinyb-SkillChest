@@ -1,18 +1,15 @@
 local echo_item = SkillModifierManager.register_modifier("echo_item", 2400)
 echo_item:set_add_func(function(data, modifier_index, item_id)
-    if Net.is_client() then
-        return
-    end
-    local last_frame = 0
+    data.skill.is_primary = 0
+    local time = (Item.wrap(item_id).tier + 1) * 30
+    data.skill.cooldown_base = data.skill.cooldown_base + time
+    gm._mod_ActorSkill_recalculateStats(data.skill)
     local stack = 0
     local alarm
     data:add_pre_activate_callback(function(data)
-        local current_frame = gm.variable_global_get("_current_frame")
-        local base = math.max(data.skill.cooldown_base, 10)
-        if current_frame - last_frame >= base and stack < 4 then
+        if stack < 5 then
             stack = stack + 1
             gm.item_give(data.skill.parent, item_id, 1, 1)
-            last_frame = current_frame
         end
         Alarm.destroy(alarm)
         local player = data.skill.parent
@@ -22,10 +19,7 @@ echo_item:set_add_func(function(data, modifier_index, item_id)
                 gm.item_take(player, item_id, stack, 1)
             end
             stack = 0
-            if data.skill then
-                data.skill.use_next_frame = current_frame + math.max(4 * 60 - base / 3, 60) * 3
-            end
-        end, math.floor(base + 80))
+        end, math.floor(data.skill.cooldown_base + time / 2))
     end)
 end)
 echo_item:set_info_func(function(ori_desc, data, item_id)

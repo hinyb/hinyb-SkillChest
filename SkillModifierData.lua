@@ -290,3 +290,11 @@ memory.dynamic_hook_mid("hud_draw_skill_info", {"rax", "rsp+200h-188h"}, {"RValu
             end
         end
     end)
+local ptr = gm.get_script_function_address(gm.constants.hud_draw_skills):add(5009)
+memory.dynamic_hook_mid("hud_draw_skills_is_primary_fix", {"rbp+610h-600h"}, {"RValue*"}, 0,
+    gm.get_script_function_address(gm.constants.hud_draw_skills):add(4993), function(args)
+        local skill = args[1].value
+        if skill.is_primary == 0 then
+            return ptr
+        end
+    end)

@@ -1,3 +1,7 @@
+v2.2.2
+* Balance echo_item.
+* Add resonance_skill modifier.
+
 v2.2.1
 * Some small changes.
 

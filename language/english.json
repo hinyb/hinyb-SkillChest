@@ -2,7 +2,7 @@
     "skill_modifier" : {
         "echo_item" : {
             "name" : "<y>Echo Item</c>",
-            "description" : "Give a <y>temporary item</c>. But once you <r>stop using the skill</c>, there will be a period during which the skill can't be used"
+            "description" : "Give a <y>temporary item</c>, but <r>additional cooldown</c> applies."
         },
         "void_power" : {
             "name" : "<y>Void Power</c>",
@@ -95,6 +95,10 @@
         "chaos_faction" : {
             "name" : "<y>Chaos Faction</c>",
             "description" : "By making a pact with the Chaos Faction, your attacks will deal <y>more damage</c> but will no longer discriminate, <r>harming both enemies and allies</c>."
+        },
+        "resonance_skill" : {
+            "name" : "<y>Resonance Skill</c>",
+            "description" : "Activating this skill triggers an <y>additional skill</c>, but <r>additional cooldown</c> applies."
         }
     },
     "skill" : {
