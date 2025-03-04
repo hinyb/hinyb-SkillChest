@@ -4,11 +4,10 @@ light:set_add_func(function(data, modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
         return origin_value * 0.625
     end)
-    data:add_post_activate_callback(function(data)
-        local cache_attack_speed = data.skill.parent.attack_speed
-        data.skill.parent.attack_speed = cache_attack_speed * 2
+    data:add_pre_activate_callback(function(data)
+        data.skill.parent.attack_speed = data.skill.parent.attack_speed * 2
         InstanceExtManager.add_on_anim_end(data.skill.parent, id, function(actor)
-            actor.attack_speed = cache_attack_speed
+            actor.attack_speed = actor.attack_speed / 2
         end)
     end)
     local inst = Instance.wrap(data.skill.parent)

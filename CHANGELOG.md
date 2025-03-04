@@ -1,3 +1,6 @@
+v2.2.3
+* Fix resonance_skill's sync bugs. I am sleepy and forget to test it.
+
 v2.2.2
 * Balance echo_item.
 * Add resonance_skill modifier.
