@@ -13,11 +13,14 @@ life_burn:set_add_func(function(data)
         local current_frame = gm.variable_global_get("_current_frame")
         if last_frame + 1 ~= current_frame then
             if data.skill.stock == 0 then
-                gm.actor_skill_add_stock(data.skill.parent, data.skill.slot_index)
-                Utils.set_and_sync_inst_from_table(data.skill.parent, {
-                    hp = data.skill.parent.hp - num
+                gm.actor_skill_add_stock(actor, data.skill.slot_index)
+                Utils.set_and_sync_inst_from_table(actor, {
+                    hp = actor.hp - num
                 })
                 data.skill.use_next_frame = 0
+                -- can't use skill's sprite, because it don't use image_index.
+                -- can solve this but I think it is not necessary.
+                Utils.actor_set_kill_cause_sync(actor, actor.sprite_index, "skill_modifier.life_burn.kill_name")
             end
         end
         last_frame = current_frame

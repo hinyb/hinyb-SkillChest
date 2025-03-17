@@ -4,6 +4,10 @@
 
 ---
 
+## How to configure
+* Open the ImGUI window display (default key is `Insert`)
+* Toggle and configure modifier weights as needed.
+
 ## Installation Instructions
 
 [Installation FAQ](https://docs.google.com/document/u/1/d/1NgLwb8noRLvlV9keNc_GF2aVzjARvUjpND2rxFgxyfw/edit?usp=sharing)

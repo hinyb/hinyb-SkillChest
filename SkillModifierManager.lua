@@ -1,6 +1,10 @@
+require("SkillModifier")
+require("SkillModifierData")
+
 -- maybe I need rewrite the modifier_data
 HookSystem.clean_hook()
 local modifier_pool = {}
+local modifiers_name_order = {}
 local default_weight = 500
 local skills_data = {}
 local total_weight = 0
@@ -13,6 +17,8 @@ SkillModifierManager.register_modifier = function(modifier_name, weight)
     local modifier = SkillModifier.new(modifier_name, weight)
     if modifier_pool[modifier_name] then
         log.warning("Seems some modifiers have the same name", modifier_name)
+    else
+        modifiers_name_order[#modifiers_name_order + 1] = modifier_name
     end
     modifier_pool[modifier_name] = modifier
     return modifier
@@ -71,7 +77,7 @@ SkillModifierManager.remove_modifier_local = function(skill, modifier_index)
     local modifier_data = Array.wrap(skill.ctm_arr_modifiers):get(modifier_index)
     local params = {}
     for i = 1, modifier_data:size() - 1 do
-        params[#params+1] = modifier_data:get(i)
+        params[#params + 1] = modifier_data:get(i)
     end
     modifier.remove_func(data, modifier_index, table.unpack(params))
     SkillModifierManager.clear_modifier_data(skill, modifier_index)
@@ -122,7 +128,7 @@ SkillModifierManager.get_random_modifier_name = function()
     local sum_weight = 0
     for name, modifier in pairs(modifier_pool) do
         sum_weight = sum_weight + modifier.weight
-        if rand <= sum_weight then
+        if rand <= sum_weight and not modifier.is_blacklist then
             return name
         end
     end
@@ -150,12 +156,18 @@ SkillModifierManager.count_modifier = function(skill, modifier_name)
 end
 SkillModifierManager.get_random_modifier_name_with_check = function(skill)
     local random_modifier_name = SkillModifierManager.get_random_modifier_name()
+    if not random_modifier_name then
+        return
+    end
     local random_modifier = modifier_pool[random_modifier_name]
     return random_modifier.check_func(skill) and random_modifier_name or
                SkillModifierManager.get_random_modifier_name_with_check(skill)
 end
 SkillModifierManager.get_random_modifier_name_with_monster_check = function(skill)
     local random_modifier_name = SkillModifierManager.get_random_modifier_name_with_check(skill)
+    if not random_modifier_name then
+        return
+    end
     local random_modifier = modifier_pool[random_modifier_name]
     return random_modifier.monster_check_func(skill) and random_modifier_name or
                SkillModifierManager.get_random_modifier_name_with_monster_check(skill)
@@ -235,3 +247,113 @@ Initialize(function()
         return sync_message
     end
 end)
+
+local current_modifier_index = 0
+local current_modifier_flag = true
+local current_modifier_weight = 500
+
+mods.on_all_mods_loaded(function()
+    for k, v in pairs(mods) do
+        if type(v) == "table" and v.tomlfuncs then
+            Toml = v
+        end
+    end
+    params = {}
+    params = Toml.config_update(_ENV["!guid"], params)
+    for modifier_name, data in pairs(params) do
+        local modifier = SkillModifierManager.get_modifier(modifier_name)
+        if data.is_blacklist then
+            modifier.is_blacklist = data.is_blacklist
+        end
+        if data.weight then
+            modifier.default_weight = modifier.weight
+            modifier.weight = data.weight
+        end
+    end
+    local current_modifier_name = modifiers_name_order[current_modifier_index + 1]
+    local current_modifier = SkillModifierManager.get_modifier(current_modifier_name)
+    current_modifier_weight = current_modifier.weight
+    current_modifier_flag = not current_modifier.is_blacklist
+end)
+
+local clicked, pressed, used, reset, reset_all
+
+gui.add_to_menu_bar(function()
+    ImGui.TextColored(1, 0.5, 1, 1, "-- Skill Modifier Settings --")
+    ImGui.PushID("checkbox")
+    current_modifier_flag, pressed = ImGui.Checkbox("", current_modifier_flag)
+    ImGui.PopID()
+    ImGui.SameLine()
+    ImGui.PushID("combo")
+    current_modifier_index, clicked = ImGui.Combo("", current_modifier_index, modifiers_name_order,
+        #modifiers_name_order, 5)
+    ImGui.PopID()
+    ImGui.SameLine()
+    ImGui.SetNextItemWidth(160)
+    current_modifier_weight, used = ImGui.InputInt("weight", current_modifier_weight, 1, 10)
+    ImGui.SameLine()
+    reset = ImGui.Button("Reset")
+    reset_all = ImGui.Button("Reset All")
+
+    if not clicked and not pressed and not used and not reset and not reset_all then
+        return
+    end
+
+    local current_modifier_name = modifiers_name_order[current_modifier_index + 1]
+    local current_modifier = SkillModifierManager.get_modifier(current_modifier_name)
+    if params[current_modifier_name] == nil then
+        params[current_modifier_name] = {}
+    end
+    if clicked then
+        current_modifier_flag = not params[current_modifier_name].is_blacklist
+        current_modifier_weight =
+            params[current_modifier_name].weight ~= nil and params[current_modifier_name].weight or
+                current_modifier.weight
+    end
+    if pressed then
+        current_modifier.is_blacklist = not current_modifier_flag
+        params[current_modifier_name].is_blacklist = not current_modifier_flag
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+    if used then
+        if not current_modifier.default_weight then
+            current_modifier.default_weight = current_modifier.weight
+        end
+        current_modifier.weight = current_modifier_weight
+        total_weight = 0
+        for i = 1, #modifiers_name_order do
+            local modifier_name = modifiers_name_order[i]
+            local modifier = SkillModifierManager.get_modifier(modifier_name)
+            total_weight = total_weight + modifier.weight
+        end
+        params[current_modifier_name].weight = current_modifier_weight
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+    if reset then
+        current_modifier.weight = current_modifier.default_weight or current_modifier.weight
+        current_modifier.is_blacklist = nil
+        current_modifier_flag = true
+        current_modifier_weight = current_modifier.weight
+        params[current_modifier_name] = nil
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+    if reset_all then
+        total_weight = 0
+        for i = 1, #modifiers_name_order do
+            local modifier_name = modifiers_name_order[i]
+            local modifier = SkillModifierManager.get_modifier(modifier_name)
+            modifier.weight = modifier.default_weight or modifier.weight
+            modifier.is_blacklist = nil
+            total_weight = total_weight + modifier.weight
+        end
+        current_modifier_flag = true
+        current_modifier_weight = current_modifier.weight
+        params = {}
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+end)
+
+local names = path.get_files(_ENV["!plugins_mod_folder_path"] .. "/SkillModifiers")
+for _, name in ipairs(names) do
+    require(name)
+end

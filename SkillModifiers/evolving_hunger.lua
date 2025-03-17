@@ -21,10 +21,10 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
         actor:add_callback("onStatRecalc", id, function(actor)
             actor.maxhp = actor.maxhp - num
         end)
-        actor.maxhp = actor.maxhp - num
         data:add_skill_attr_change("damage", function(origin_value)
             return origin_value * 1.5
         end)
+        gm.actor_queue_dirty(actor.value)
         times = times + 1
         modifer:set(1, times)
     end)

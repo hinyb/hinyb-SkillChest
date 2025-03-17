@@ -1,11 +1,8 @@
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 mods["hinyb-Dropability"].auto()
 
-require("Utils.lua")
-require("SkillModifier")
-require("SkillModifierData")
-require("SkillModifierManager")
 require("skillPickupCompat")
+require("SkillModifierManager")
 
 mods["MGReturns-ENVY"].auto()
 envy = mods["MGReturns-ENVY"]
@@ -14,10 +11,6 @@ public_things = {
 } -- Maybe using a wrong way
 require("./envy_setup")
 
-local names = path.get_files(_ENV["!plugins_mod_folder_path"] .. "/SkillModifiers")
-for _, name in ipairs(names) do
-    require(name)
-end
 local function init()
     local spawn_weight = {8, 6}
     local spawn_cost = {24, 24} -- It seems they are not worth the high price for most skills, so I lowered their prices.
@@ -44,8 +37,10 @@ local function init()
                     break
                 end
             end
-            SkillModifierManager.add_modifier_params(skill,
-                SkillModifierManager.get_random_modifier_name_with_check(skill))
+            local random_modifier_name = SkillModifierManager.get_random_modifier_name_with_check(skill)
+            if random_modifier_name then
+                SkillModifierManager.add_modifier_params(skill, random_modifier_name)
+            end
             num = num + 1
         end
         return skill
@@ -57,8 +52,10 @@ local function init()
                     break
                 end
             end
-            SkillModifierManager.add_modifier_params(skill,
-                SkillModifierManager.get_random_modifier_name_with_check(skill))
+            local random_modifier_name = SkillModifierManager.get_random_modifier_name_with_check(skill)
+            if random_modifier_name then
+                SkillModifierManager.add_modifier_params(skill, random_modifier_name)
+            end
             num = num + 1
         end
         return skill

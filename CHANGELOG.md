@@ -1,3 +1,9 @@
+v2.2.4
+* Fix random_seed can't sync correctly.
+* Fix evolving_hunger will deal double damage.
+* Add kill cause to life_burn.
+* Make modifers configurable.
+
 v2.2.3
 * Fix resonance_skill's sync bugs. I am sleepy and forget to test it.
 

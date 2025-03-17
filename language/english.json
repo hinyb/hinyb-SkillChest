@@ -18,7 +18,8 @@
         },
         "life_burn" : {
             "name" : "<y>Life Burn</c>",
-            "description" : "Can <y>forcibly</c> trigger this skill by <r>burning your life</c>."
+            "description" : "Can <y>forcibly</c> trigger this skill by <r>burning your life</c>.",
+            "kill_name" : "<y>Life Burn</c>"
         },
         "after_image" : {
             "name" : "<y>After-Image</c>",
