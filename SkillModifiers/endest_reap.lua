@@ -1,8 +1,9 @@
 local endest_reap = SkillModifierManager.register_modifier("endest_reap")
+endest_reap.damage_multipiler = 0.3
 endest_reap:set_add_func(function(data, modifier_index)
     local modifer = Array.wrap(data.skill.ctm_arr_modifiers):get(modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
-        return origin_value + modifer:get(1) * 0.3
+        return origin_value + modifer:get(1) * endest_reap.damage_multipiler
     end)
     local actor = Instance.wrap(data.skill.parent)
     actor:add_callback("onKillProc", data:get_id(modifier_index), function(actor, victim)
@@ -30,3 +31,4 @@ endest_reap:set_info_func(function(ori_desc, data, stack)
         Language.translate_token("skill_modifier.endest_reap.name") .. " • " .. Utils.to_string_with_floor(stack) ..
             ": " .. Language.translate_token("skill_modifier.endest_reap.description") .. "\n" .. ori_desc
 end)
+endest_reap:register_component(ComponentTemplates.create_modifier_double_component("endest_reap_damage_multipiler", "damage_multipiler"))

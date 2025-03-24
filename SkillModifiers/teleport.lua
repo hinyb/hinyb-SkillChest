@@ -51,7 +51,6 @@ end
 local function get_teleport_name(teleport_id)
     return "teleport" .. Utils.to_string_with_floor(teleport_id)
 end
-local teleport_add_message, teleport_remove_message
 local teleport_add_sync
 local teleport_remove_sync
 Initialize(function()

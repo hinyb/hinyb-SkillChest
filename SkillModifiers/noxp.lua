@@ -1,8 +1,9 @@
 -- exp is handle by oDirectorControl
 local noxp = SkillModifierManager.register_modifier("noxp")
+noxp.damage_multipiler = 4
 noxp:set_add_func(function(data, modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
-        return origin_value * 4
+        return origin_value * noxp.damage_multipiler
     end)
     InstanceExtManager.add_callback(data.skill.parent, "pre_player_level_up", data:get_id(), function (player)
         return false
@@ -17,3 +18,5 @@ end)
 noxp:set_monster_check_func(function(skill)
     return false
 end)
+noxp:register_component(ComponentTemplates.create_modifier_double_component("noxp_damage_multipiler",
+    "damage_multipiler"))

@@ -19,6 +19,7 @@ Initialize(function()
     end
 end)
 local cosmic_joke = SkillModifierManager.register_modifier("cosmic_joke", 50)
+cosmic_joke.probability = 0.05
 cosmic_joke:set_add_func(function(data, modifier_index)
     InstanceExtManager.add_skill_bullet_callback(data.skill.parent, data.skill.slot_index, data:get_id(modifier_index),
         "hit", function(hit_info, target)
@@ -53,3 +54,4 @@ end)
 cosmic_joke:set_monster_check_func(function(skill)
     return false
 end)
+cosmic_joke:register_component(ComponentTemplates.create_modifier_double_component("cosmic_joke_proability", "probability"))

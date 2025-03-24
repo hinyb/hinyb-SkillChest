@@ -4,16 +4,16 @@ local sound
 Initialize(function()
     sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folder_path"] .. "/sounds/clockticks.ogg")
 end)
-local during = 60 * 4
-local cooldown = 60 * 15
 local time_dilation_flag = false
 local alarm
 local time_dilation = SkillModifierManager.register_modifier("time_dilation", 50)
+time_dilation.duration = 4
+time_dilation.cooldown = 15
 time_dilation:set_add_func(function(data, modifier_index, item_id)
     local last_frame = 0
     data:add_pre_activate_callback(function(data)
         local current_frame = gm.variable_global_get("_current_frame")
-        if current_frame - last_frame >= cooldown and not time_dilation_flag then
+        if current_frame - last_frame >= time_dilation.cooldown * 60 and not time_dilation_flag then
             last_frame = current_frame
             time_dilation_flag = true
             gm.audio_play_sound(sound, 1.0, true)
@@ -23,7 +23,7 @@ time_dilation:set_add_func(function(data, modifier_index, item_id)
                 gm.game_set_speed(60, false)
                 gm.audio_stop_sound(sound)
                 time_dilation_flag = false
-            end, during)
+            end, time_dilation.duration * 60)
         end
     end)
 end)
@@ -33,6 +33,9 @@ end)
 time_dilation:set_monster_check_func(function(skill)
     return false
 end)
+time_dilation:register_component(ComponentTemplates.create_modifier_double_component("time_dilation_duration", "duration"))
+time_dilation:register_component(ComponentTemplates.create_modifier_double_component("time_dilation_cooldown", "cooldown"))
+
 local black_list = {
     [gm.constants.oStartObjects] = true,
     [gm.constants.oStartMenu] = true,

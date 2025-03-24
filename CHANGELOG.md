@@ -1,3 +1,6 @@
+v2.2.5
+* Add more customization options.
+
 v2.2.4
 * Fix random_seed can't sync correctly.
 * Fix evolving_hunger will deal double damage.

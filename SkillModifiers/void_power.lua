@@ -1,7 +1,8 @@
 local void_power = SkillModifierManager.register_modifier("void_power", 250)
+void_power.damage_multipiler = 2
 void_power:set_add_func(function(data, modifier_index)
     data:add_skill_attr_change("damage", function(origin_value, data)
-        return origin_value * 2 ^ Utils.get_empty_skill_num(data.skill.parent)
+        return origin_value * void_power.damage_multipiler ^ Utils.get_empty_skill_num(data.skill.parent)
     end)
     local actor = data.skill.parent
     if not gm.bool(actor.is_local) then
@@ -25,3 +26,4 @@ end)
 void_power:set_check_func(function(skill)
     return Utils.is_damage_skill(skill.skill_id)
 end)
+void_power:register_component(ComponentTemplates.create_modifier_double_component("void_power_damage_multipiler", "damage_multipiler"))

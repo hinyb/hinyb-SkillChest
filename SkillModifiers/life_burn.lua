@@ -1,4 +1,5 @@
 local life_burn = SkillModifierManager.register_modifier("life_burn", 250)
+life_burn.hp_multipiler = 1.0
 life_burn:set_check_func(function(skill)
     return SkillModifierManager.count_modifier(skill, "life_burn") < 1
 end)
@@ -8,6 +9,7 @@ life_burn:set_add_func(function(data)
         return
     end
     local num = Utils.get_handy_drone_type(data.skill.skill_id) ~= nil and 25 or data.skill.cooldown_base / 60 * 5
+    num = num * life_burn.hp_multipiler
     local last_frame = 0
     data:add_pre_local_can_activate_callback(function(data)
         local current_frame = gm.variable_global_get("_current_frame")
@@ -29,3 +31,4 @@ end)
 life_burn:set_monster_check_func(function(skill)
     return false
 end)
+life_burn:register_component(ComponentTemplates.create_modifier_double_component("life_burn_hp_multipiler", "hp_multipiler"))

@@ -16,6 +16,8 @@ function SkillModifier.new(modifer_name, weight)
     local self = setmetatable({}, SkillModifier)
     self.modifier_name = modifer_name
     self.weight = weight
+    self.enable = true
+    self.component_childs = {}
     self.info_func = function(ori_desc)
         return Language.translate_token("skill_modifier." .. modifer_name .. ".name") .. ": " ..
                    Language.translate_token("skill_modifier." .. modifer_name .. ".description") .. "\n" .. ori_desc
@@ -52,4 +54,8 @@ end
 ---@param fn function(skillPickup, modifier_index, ...) The function will be called when adding modifier to a skillPickup.
 function SkillModifier:set_add_inst_func(fn)
     self.add_inst_func = fn
+end
+
+function SkillModifier:register_component(component)
+    table.insert(self.component_childs, component)
 end

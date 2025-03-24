@@ -1,4 +1,6 @@
 local evolving_hunger = SkillModifierManager.register_modifier("evolving_hunger", 100)
+evolving_hunger.damage_multipiler = 1.5
+evolving_hunger.hp_multipiler = 1.0
 evolving_hunger:set_default_params_func(function()
     return 1, 0
 end)
@@ -9,7 +11,7 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
         local actor = Instance.wrap(data.skill.parent)
         local skill_address = memory.get_usertype_pointer(data.skill)
         local id = Utils.to_string_with_floor(skill_address) .. tostring(modifier_index) .. Utils.to_string_with_floor(times)
-        local num = Utils.round(0.64 * times * 1.08 ^ times)
+        local num = Utils.round(0.64 * times * 1.08 ^ times * evolving_hunger.hp_multipiler)
         if num >= actor.maxhp then
             data:add_skill_attr_change("cooldown", function(origin_value)
                 local num_cooldown = (num - actor.maxhp + 1) * 10
@@ -22,7 +24,7 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
             actor.maxhp = actor.maxhp - num
         end)
         data:add_skill_attr_change("damage", function(origin_value)
-            return origin_value * 1.5
+            return origin_value * evolving_hunger.damage_multipiler
         end)
         gm.actor_queue_dirty(actor.value)
         times = times + 1
@@ -30,7 +32,7 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
     end)
     for _ = 2, times do
         data:add_skill_attr_change("damage", function(origin_value)
-            return origin_value * 1.4
+            return origin_value * evolving_hunger.damage_multipiler
         end)
     end
     local cooldown_adjust = modifer:get(2)
@@ -45,3 +47,6 @@ end)
 evolving_hunger:set_monster_check_func(function(skill)
     return false
 end)
+evolving_hunger:register_component(ComponentTemplates.create_modifier_double_component("evolving_hunger_damage_multipiler", "damage_multipiler"))
+evolving_hunger:register_component(ComponentTemplates.create_modifier_double_component("evolving_hunger_hp_multipiler", "hp_multipiler"))
+

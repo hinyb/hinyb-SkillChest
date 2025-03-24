@@ -4,12 +4,15 @@ Initialize(function()
     sound = Resources.sfx_load("hinyb", "totem_of_undying", _ENV["!plugins_mod_folder_path"] .. "/sounds/use_totem.ogg")
 end)
 local totem_of_undying = SkillModifierManager.register_modifier("totem_of_undying", 50)
+totem_of_undying.invincible_duraction = 1
+totem_of_undying.speed_up_duraction = 0.5
+
 totem_of_undying:set_add_func(function(data, modifier_index)
     InstanceExtManager.add_callback(data.skill.parent, "on_actor_death_after_hippo", data:get_id(), function(inst)
         inst.hp = inst.maxhp / 2
         SkillModifierManager.clear_and_set_skill_sync(inst, data.skill.slot_index, 0)
-        inst.invincible = 60
-        gm.apply_buff(inst, 11, 30)
+        inst.invincible = totem_of_undying.invincible_duraction * 60
+        gm.apply_buff(inst, 11, totem_of_undying.speed_up_duraction * 60)
         gm.sound_play_at(sound, 1.0, 1.0, inst.x, inst.y, 1.0)
         return false
     end)
@@ -20,3 +23,7 @@ end)
 totem_of_undying:set_check_func(function(skill)
     return SkillModifierManager.count_modifier(skill, "totem_of_undying") < 1
 end)
+totem_of_undying:register_component(ComponentTemplates.create_modifier_double_component(
+    "time_dilation_invincible_duraction", "invincible_duraction"))
+totem_of_undying:register_component(ComponentTemplates.create_modifier_double_component(
+    "time_dilation_speed_up_duraction", "speed_up_duraction"))

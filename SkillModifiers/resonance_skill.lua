@@ -1,14 +1,14 @@
 local create_actor_sync
-local table = {"image_xscale", "team", "hp", "shield", "damage", "critical_chance", "totem_spawn_id", "elite_type"}
+local sync_table = {"image_xscale", "team", "hp", "shield", "damage", "critical_chance", "totem_spawn_id", "elite_type"}
 local resonance_skill = SkillModifierManager.register_modifier("resonance_skill")
+local skill_blacklist = {}
+resonance_skill.cooldown_multipiler = 0.75
 resonance_skill:set_add_func(function(data, modifier_index, skill_id)
     data.skill.is_primary = 0
     local default_skill = Skill.wrap(skill_id)
-    data.skill.cooldown_base = (data.skill.cooldown_base + default_skill.cooldown) * 0.75
-    local required_stock = default_skill.required_stock
+    data.skill.cooldown_base = (data.skill.cooldown_base + default_skill.cooldown) * resonance_skill.cooldown_multipiler
     gm._mod_ActorSkill_recalculateStats(data.skill)
     local target = data.skill.parent
-    local target_id = target.id
     data:add_post_activate_callback(function(data)
         if gm.bool(target.is_local) then
             create_actor_sync(target, skill_id)
@@ -31,7 +31,8 @@ resonance_skill:set_info_func(function(ori_desc, data, skill_id)
                Language.translate_token(skill:get(2)) .. "</c>" .. ": " .. Language.translate_token(skill:get(3)) ..
                "\n" .. ori_desc
 end)
-
+resonance_skill:register_component(ComponentTemplates.create_modifier_double_component(
+    "resonance_skill_cooldown_multipiler", "cooldown_multipiler"))
 Initialize(function()
     local oFakeActor = Object.new("hinyb", "oFakeActor", Object.PARENT.actor)
     gm.constants.oFakeActor = oFakeActor.value
@@ -66,8 +67,8 @@ Initialize(function()
         inst.is_local = is_local
         inst.local_client_is_authority = is_local
 
-        for i = 1, #table do
-            local name = table[i]
+        for i = 1, #sync_table do
+            local name = sync_table[i]
             inst[name] = target[name]
         end
         inst.m_id = inst:set_m_id(inst.id)
@@ -132,6 +133,87 @@ Initialize(function()
                 end)
         end
     ]], {Utils.param_type.instance, Utils.param_type.ushort}, {
-        table = table
+        sync_table = sync_table
     })
 end)
+
+local resonance_skill_blacklist = Component.new("resonance_skill_blacklist")
+local selectable_list = {}
+local selected_list = {76}
+local index = 0
+local function init()
+    for i = 0, Class.Skill:size() - 1 do
+        if i ~= 185 then
+            local skill = Skill.wrap(i)
+            if skill.auto_restock and not Utils.is_skill_need_scrap_bar(skill.value) and
+                not skill_blacklist[skill.value] then
+                selectable_list[#selectable_list + 1] = skill.identifier
+            end
+        end
+    end
+end
+Initialize(init)
+if hot_reload then
+    init()
+end
+local function update_blacklist()
+    skill_blacklist = {}
+    for _, v in ipairs(selected_list) do
+        skill_blacklist[v] = true
+    end
+end
+resonance_skill_blacklist.prepare = function(self)
+    self.active_params = self.parent.active_params
+    self.active_modifier = self.parent.active_modifier
+end
+resonance_skill_blacklist.on_update = function(self)
+    selected_list = {}
+    for namespace, v in pairs(self.active_params) do
+        for identifier, t in pairs(v) do
+            if t.disable then
+                local skill = Skill.find(namespace, identifier)
+                table.insert(selected_list, skill.value)
+            end
+        end
+    end
+end
+resonance_skill_blacklist.on_draw = function(self)
+    local need_to_delete = {}
+    for k, v in ipairs(selected_list) do
+        ImGui.TextWrapped(Skill.wrap(v).identifier)
+        ImGui.SameLine()
+        ImGui.PushID(k)
+        if not ImGui.Checkbox("", true) then
+            table.insert(need_to_delete, k)
+        end
+        ImGui.PopID(k)
+    end
+    if #need_to_delete ~= 0 then
+        for _, v in ipairs(need_to_delete) do
+            local skill = Skill.wrap(selected_list[v])
+            self.active_params[skill.namespace][skill.identifier].disable = nil
+            table.remove(selected_list, v)
+        end
+        update_blacklist()
+        ComponentUtils.save_change()
+    end
+    index = ImGui.Combo("", index, selectable_list, #selectable_list, 5)
+    ImGui.SameLine()
+    if ImGui.Button("Add") then
+        if not Helper.table_has(selected_list, index) then
+            local skill = Skill.wrap(index)
+            ComponentUtils.get_or_create_table(ComponentUtils.get_or_create_table(self.active_params, skill.namespace),
+                skill.identifier).disable = true
+            table.insert(selected_list, index)
+            update_blacklist()
+            ComponentUtils.save_change()
+        end
+    end
+end
+resonance_skill_blacklist.on_restore = function(self)
+    selected_list = {}
+end
+resonance_skill_blacklist.on_cleanup = function(self)
+    update_blacklist()
+end
+resonance_skill:register_component(resonance_skill_blacklist)

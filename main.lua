@@ -1,8 +1,12 @@
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 mods["hinyb-Dropability"].auto()
 
+require("Component")
+
 require("skillPickupCompat")
 require("SkillModifierManager")
+
+require("settings")
 
 mods["MGReturns-ENVY"].auto()
 envy = mods["MGReturns-ENVY"]

@@ -1,7 +1,8 @@
 local chaos_faction = SkillModifierManager.register_modifier("chaos_faction")
+chaos_faction.damage_multipiler = 1.75
 chaos_faction:set_add_func(function(data, modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
-        return origin_value * 1.75
+        return origin_value * chaos_faction.damage_multipiler
     end)
     local actor = data.skill.parent
     if not gm.bool(actor.is_local) then
@@ -31,3 +32,4 @@ end)
 chaos_faction:set_check_func(function(skill)
     return Utils.is_can_track_skill(skill.skill_id) and Utils.is_damage_skill(skill.skill_id)
 end)
+chaos_faction:register_component(ComponentTemplates.create_modifier_double_component("chaos_faction_damage_multipiler", "damage_multipiler"))
