@@ -20,12 +20,12 @@ light:set_add_func(function(data, modifier_index)
         inst.pGravity1 = inst.pGravity1 * light.gravity_multipiler
         inst.pGravity2 = inst.pGravity2 * light.gravity_multipiler
     end)
-    gm.actor_queue_dirty(inst)
+    GM.actor_queue_dirty(inst)
 end)
 light:set_remove_func(function(data, modifier_index)
     local inst = Instance.wrap(data.skill.parent)
     inst:remove_callback(data:get_id(modifier_index))
-    gm.actor_queue_dirty(inst)
+    GM.actor_queue_dirty(inst)
     inst.max_pGravity1 = inst.max_pGravity1 / light.gravity_multipiler
 end)
 light:set_check_func(function(skill)

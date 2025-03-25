@@ -1,3 +1,8 @@
+v2.2.6
+* Make heavy configurable.
+* Fix some issues in lang.
+* Fix heavy and light can't be applied correctly.
+
 v2.2.5
 * Add more customization options.
 

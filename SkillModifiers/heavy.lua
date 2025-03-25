@@ -2,7 +2,7 @@ local heavy = SkillModifierManager.register_modifier("heavy")
 heavy.damage_multipiler = 4
 heavy.attack_speed_multipiler = 0.5
 heavy.gravity_multipiler = 1.25
-
+heavy.enable_anvil_effect = true
 heavy:set_add_func(function(data, modifier_index)
     local id = data:get_id(modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
@@ -25,12 +25,12 @@ heavy:set_add_func(function(data, modifier_index)
         inst.pGravity1 = inst.pGravity1 * heavy.gravity_multipiler
         inst.pGravity2 = inst.pGravity2 * heavy.gravity_multipiler
     end)
-    gm.actor_queue_dirty(inst)
+    GM.actor_queue_dirty(inst)
 end)
 heavy:set_remove_func(function(data, modifier_index)
     local inst = Instance.wrap(data.skill.parent)
     inst:remove_callback(data:get_id(modifier_index))
-    gm.actor_queue_dirty(inst)
+    GM.actor_queue_dirty(inst)
     -- Loss of precision may cause some issues.
     inst.max_pGravity1 = inst.max_pGravity1 / heavy.gravity_multipiler
 end)
@@ -41,6 +41,9 @@ heavy:set_check_func(function(skill)
     return Utils.is_damage_skill(skill.skill_id)
 end)
 heavy:set_add_inst_func(function(inst, skill_params, x, y, modifier_index, damage, ...)
+    if not heavy.enable_anvil_effect then
+        return
+    end
     if inst.has_heavy then
         inst.pGravity1 = inst.pGravity1 * heavy.gravity_multipiler
         inst.max_pGravity1 = inst.max_pGravity1 * heavy.gravity_multipiler
@@ -116,3 +119,5 @@ heavy:register_component(ComponentTemplates.create_modifier_double_component("he
     "attack_speed_multipiler"))
 heavy:register_component(ComponentTemplates.create_modifier_double_component("heavy_gravity_multipiler",
     "gravity_multipiler"))
+heavy:register_component(ComponentTemplates.create_modifier_bool_component("heavy_enable_anvil_effect",
+    "enable_anvil_effect"))
