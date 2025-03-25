@@ -100,7 +100,7 @@ function ComponentTemplates.create_builtin_number_component(name, key, target_na
         end
         number, need_update = ImGui[fn_name](display_text, number, table.unpack(fn_params))
         if need_update then
-            if not self.active_params[origin_key] then
+            if self.active_params[origin_key] == nil then
                 self.active_params[origin_key] = self[target_name][key]
             end
             if number == self.active_params[origin_key] then

@@ -23,7 +23,7 @@
         },
         "after_image" : {
             "name" : "<y>After-Image</c>",
-            "description" : "Focus briefly, channeling energy into an after-image. <b>All attacks are doubled</c>. \nStacks twice. Its during depends on the skill's <y>cooldown</c>"
+            "description" : "Focus briefly, channeling energy into an after-image. <b>All attacks are doubled</c>. \nStacks twice. Its during depends on the skill's <y>cooldown</c>."
         },
         "fragile" : {
             "name" : "<y>Fragile</c>",

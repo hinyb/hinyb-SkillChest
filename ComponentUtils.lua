@@ -60,3 +60,16 @@ function ComponentUtils.table_set_empty(t)
         t[k] = nil
     end
 end
+local pattern = "<.->"
+function ComponentUtils.tooltip_cleanup(tooltip)
+    return tooltip:gsub(pattern, "")
+end
+function ComponentUtils.simple_map_to_table(map)
+    local keys = Array.wrap(gm.ds_map_keys_to_array(map))
+    local values = Array.wrap(gm.ds_map_values_to_array(map))
+    local result = {}
+    for i = 0, keys:size() -1 do
+        result[keys:get(i)] = values:get(i)
+    end
+    return result
+end

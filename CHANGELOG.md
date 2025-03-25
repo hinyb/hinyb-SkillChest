@@ -1,3 +1,7 @@
+v2.2.7
+* Add some tooltips.
+* Fix can't save the toggle state of modifiers.
+
 v2.2.6
 * Make heavy configurable.
 * Fix some issues in lang.

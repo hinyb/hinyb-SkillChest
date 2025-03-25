@@ -1,8 +1,9 @@
-local modifier_enable_component = ComponentTemplates.create_builtin_bool_component("modifier_enable_component", "enable",
-    "active_modifier", nil, "")
-local modifier_weight_component = ComponentTemplates.create_modifier_int_component("modifier_weight_component", "weight", nil, nil, function ()
-    SkillModifierManager.update_weight()
-end)
+local modifier_enable_component = ComponentTemplates.create_builtin_bool_component("modifier_enable_component",
+    "enable", "active_modifier", "Enable/Disable the modifier", "")
+local modifier_weight_component = ComponentTemplates.create_modifier_int_component("modifier_weight_component",
+    "weight", "The modifier's probability of selection.", nil, function()
+        SkillModifierManager.update_weight()
+    end)
 local modifier_component = Component.new("skill_modifiers")
 local modifiers_name_order = SkillModifierManager.modifiers_name_order
 local current_modifier_index = 0
@@ -31,6 +32,12 @@ modifier_component.on_draw = function(self)
         self:restore(true)
         self:update()
     end
+    if ImGui.IsItemHovered() then
+        local modifier_name = modifiers_name_order[current_modifier_index + 1]
+        local tooltip = Language.translate_token("skill_modifier." .. modifier_name .. ".name") .. ": " ..
+                            Language.translate_token("skill_modifier." .. modifier_name .. ".description")
+        ImGui.SetTooltip(ComponentUtils.tooltip_cleanup(tooltip) .. "\nIt is designed to be applied to a skill, so the tooltip may have some issues.")
+    end
     ImGui.SameLine()
     if ImGui.Button("Reset") then
         self:restore()
@@ -50,7 +57,7 @@ modifier_component.on_restore = function(self)
     modifier_component:restore(true)
     return false
 end
-modifier_component.on_cleanup = function (self)
+modifier_component.on_cleanup = function(self)
     ComponentUtils.table_set_empty(self.active_params)
     ComponentUtils.save_change()
 end
