@@ -25,6 +25,7 @@ modifier_component.prepare = function(self)
     end
 end
 modifier_component.on_draw = function(self)
+    ImGui.TextColored(1, 0.5, 1, 1, "-- Modifier Settings --")
     local need_update
     current_modifier_index, need_update = ImGui.Combo("", current_modifier_index, modifiers_name_order,
         #modifiers_name_order, 5)

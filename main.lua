@@ -1,6 +1,22 @@
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 mods["hinyb-Dropability"].auto()
 
+SkillDisplayNames = {}
+SkillDisplayMap = {}
+local function init1()
+    for i = 0, Class.Skill:size() - 1 do
+        if Utils.check_random_skill(i) then
+            local skill = Skill.wrap(i)
+            SkillDisplayMap[#SkillDisplayNames] = i
+            SkillDisplayNames[#SkillDisplayNames + 1] = skill.identifier
+        end
+    end
+end
+Initialize(init1)
+if hot_reload then
+    init1()
+end
+
 require("Component")
 
 require("skillPickupCompat")
@@ -137,7 +153,11 @@ local function init()
                             data.sprite_offset_y = -8
                             data.get_skill = Utils.random_skill_id(self.random_seed)
                         end
-                        data.skill_id = data.get_skill()
+                        local skill_id
+                        repeat
+                            skill_id = data.get_skill()
+                        until _CheckSKill(skill_id)
+                        data.skill_id = skill_id
                         local default_skill = Class.SKILL:get(data.skill_id)
                         data.skill_sprite = default_skill:get(4)
                         data.skill_subimg = default_skill:get(5)

@@ -19,7 +19,7 @@ local get_random = Utils.random_skill_id()
 resonance_skill:set_default_params_func(function()
     while true do
         local skill = Skill.wrap(get_random())
-        if skill.auto_restock and not Utils.is_skill_need_scrap_bar(skill.value) then
+        if skill.auto_restock and not Utils.is_skill_need_scrap_bar(skill.value) and not skill_blacklist[skill.value] then
             return skill.value
         end
     end
@@ -139,23 +139,22 @@ end)
 
 local resonance_skill_blacklist = Component.new("resonance_skill_blacklist")
 local selectable_list = {}
-local selected_list = {76}
-local index = 0
-local function init()
-    for i = 0, Class.Skill:size() - 1 do
-        if i ~= 185 then
-            local skill = Skill.wrap(i)
-            if skill.auto_restock and not Utils.is_skill_need_scrap_bar(skill.value) and
-                not skill_blacklist[skill.value] then
-                selectable_list[#selectable_list + 1] = skill.identifier
-            end
+local selectable_map = {}
+local function init1()
+    for index, identifier in ipairs(SkillDisplayNames) do
+        local skill = Skill.wrap(SkillDisplayMap[index - 1])
+        if skill.auto_restock and Utils.is_skill_need_scrap_bar(skill.value) then
+            selectable_map[#selectable_list] = skill.value
+            selectable_list[#selectable_list + 1] = identifier
         end
     end
 end
-Initialize(init)
+Initialize(init1)
 if hot_reload then
-    init()
+    init1()
 end
+local selected_list = {76}
+local index = 0
 local function update_blacklist()
     skill_blacklist = {}
     for _, v in ipairs(selected_list) do
@@ -201,7 +200,7 @@ resonance_skill_blacklist.on_draw = function(self)
     ImGui.SameLine()
     if ImGui.Button("Add") then
         if not Helper.table_has(selected_list, index) then
-            local skill = Skill.wrap(index)
+            local skill = Skill.wrap(selectable_map[index])
             ComponentUtils.get_or_create_table(ComponentUtils.get_or_create_table(self.active_params, skill.namespace),
                 skill.identifier).disable = true
             table.insert(selected_list, index)
