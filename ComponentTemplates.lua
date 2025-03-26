@@ -87,7 +87,10 @@ function ComponentTemplates.create_builtin_number_component(name, key, target_na
         self[target_name] = self.parent[target_name]
     end
     component.on_update = function(self)
-        number = self.active_params[key] or number
+        local number_ = self.active_params[key]
+        if number_ ~= nil then
+            number = number_
+        end
         self[target_name][key] = number
     end
     component.on_draw = function(self)
@@ -120,7 +123,7 @@ function ComponentTemplates.create_builtin_number_component(name, key, target_na
         end
     end
     component.on_restore = function(self)
-        if self.active_params[origin_key] then
+        if self.active_params[origin_key] ~= nil then
             self[target_name][key] = self.active_params[origin_key]
         end
         number = self[target_name][key]

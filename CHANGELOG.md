@@ -1,3 +1,6 @@
+v2.2.9
+* Fix can't save the toggle state of modifiers again.
+
 v2.2.8
 * Add support for blacklisting skills.
 
