@@ -1,5 +1,6 @@
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 mods["hinyb-Dropability"].auto()
+mods["hinyb-SimpleConfigAPI"].auto()
 
 SkillDisplayNames = {}
 SkillDisplayMap = {}
@@ -17,12 +18,14 @@ if hot_reload then
     init1()
 end
 
-require("Component")
-
+local settings = require("settings")
 require("skillPickupCompat")
 require("SkillModifierManager")
-
-require("settings")
+settings.auto()
+local names = path.get_files(_ENV["!plugins_mod_folder_path"] .. "/configs")
+for _, name in ipairs(names) do
+    settings:add_child(require(name))
+end
 
 mods["MGReturns-ENVY"].auto()
 envy = mods["MGReturns-ENVY"]

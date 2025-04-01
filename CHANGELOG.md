@@ -1,3 +1,6 @@
+v2.2.10
+* Extract the UI as an API.
+
 v2.2.9
 * Fix can't save the toggle state of modifiers again.
 

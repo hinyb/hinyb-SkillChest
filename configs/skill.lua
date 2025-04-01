@@ -33,7 +33,7 @@ skill_component.on_restore = function(self)
 end
 skill_component.on_cleanup = function(self)
     ComponentUtils.table_set_empty(self.active_params)
-    ComponentUtils.save_change()
+    self.save_change()
 end
 skill_component:add_child(ComponentTemplates.create_bool_component("skill_is_blacklist", "is_blacklist", false))
 function _CheckSKill(skill_id)

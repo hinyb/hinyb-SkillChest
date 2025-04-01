@@ -12,16 +12,17 @@ modifier_component.prepare = function(self)
     self.active_params = ComponentUtils.get_or_create_table(ComponentUtils.get_or_create_table(
         self.parent.active_params, self.name), modifier_name)
     self.active_modifier = SkillModifierManager.get_modifier(modifier_name)
+
     self.childs = {}
     self.draw_order = {{
         component = self,
         priority = 0
     }}
-    modifier_component:add_child(modifier_enable_component)
-    modifier_component:add_child(modifier_weight_component)
+    self:add_child(modifier_enable_component)
+    self:add_child(modifier_weight_component)
     local modifier_childs = self.active_modifier.component_childs
     for i = 1, #modifier_childs do
-        modifier_component:add_child(modifier_childs[i])
+        self:add_child(modifier_childs[i])
     end
 end
 modifier_component.on_draw = function(self)
@@ -60,6 +61,6 @@ modifier_component.on_restore = function(self)
 end
 modifier_component.on_cleanup = function(self)
     ComponentUtils.table_set_empty(self.active_params)
-    ComponentUtils.save_change()
+    self.save_change()
 end
 return modifier_component

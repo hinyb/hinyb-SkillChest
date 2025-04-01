@@ -194,7 +194,7 @@ resonance_skill_blacklist.on_draw = function(self)
             table.remove(selected_list, v)
         end
         update_blacklist()
-        ComponentUtils.save_change()
+        self.save_change()
     end
     index = ImGui.Combo("", index, selectable_list, #selectable_list, 5)
     ImGui.SameLine()
@@ -205,7 +205,7 @@ resonance_skill_blacklist.on_draw = function(self)
                 skill.identifier).disable = true
             table.insert(selected_list, index)
             update_blacklist()
-            ComponentUtils.save_change()
+            self.save_change()
         end
     end
 end
