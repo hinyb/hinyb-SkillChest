@@ -1,3 +1,6 @@
+v2.2.12
+* Fix the potential memory leak.
+
 v2.2.11
 * Fix teleport modifier can't work.
 * Add a shader for time_dilation.
