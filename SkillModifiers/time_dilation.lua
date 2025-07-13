@@ -1,6 +1,14 @@
 -- This modifier may have many sync issues.
 -- I just found this is a time stop item in the game.
-local shd_time_dilation = gm.shader_add(path.combine(_ENV["!plugins_mod_folder_path"], "shaders", "time_dilation"), "shd_time_dilation")
+local shd_time_dilation       = gm.shader_add(path.combine(_ENV["!plugins_mod_folder_path"], "shaders", "time_dilation"),
+    "shd_time_dilation")
+local _uni_tranzitioner       = gm.shader_get_uniform(shd_time_dilation, "Tranzitioner")
+local _uni_shader_strength    = gm.shader_get_uniform(shd_time_dilation, "ShaderStrength")
+local _uni_outline_threshold  = gm.shader_get_uniform(shd_time_dilation, "OutlineThreshold")
+local _uni_outline_smoothness = gm.shader_get_uniform(shd_time_dilation, "OutlineSmoothness")
+local _uni_outline_strength   = gm.shader_get_uniform(shd_time_dilation, "OutlineStrength")
+local _uni_shader_accent      = gm.shader_get_uniform(shd_time_dilation, "ShaderAccent")
+
 local sound
 Initialize(function()
     sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folder_path"] .. "/sounds/clockticks.ogg")
@@ -53,23 +61,24 @@ local black_list = {
     [gm.constants.oBNoSpawn] = true
 }
 HookSystem.clean_hook()
-HookSystem.add_special_hook("pre_Perform_Event_Object", function (ret_val, target, result, object_index, event_type, event_number)
-    if not time_dilation_flag then
-        return
-    end
-    if event_type ~= 3 then
-        return
-    end
-    local object_index_ = object_index:get()
-    if black_list[object_index_] then
-        return
-    end
-    if gm.object_is_ancestor(object_index_, gm.constants.pEnemy) == 1.0 then
-        if gm.variable_global_get("_current_frame") % 4 ~= 0 then
-            return false
+HookSystem.add_special_hook("pre_Perform_Event_Object",
+    function(ret_val, target, result, object_index, event_type, event_number)
+        if not time_dilation_flag then
+            return
         end
-    end
-end)
+        if event_type ~= 3 then
+            return
+        end
+        local object_index_ = object_index:get()
+        if black_list[object_index_] then
+            return
+        end
+        if gm.object_is_ancestor(object_index_, gm.constants.pEnemy) == 1.0 then
+            if gm.variable_global_get("_current_frame") % 4 ~= 0 then
+                return false
+            end
+        end
+    end)
 
 local my_surface = gm.surface_create(1920, 1080)
 gm.post_code_execute("gml_Object_oInit_Draw_73", function()
@@ -88,12 +97,6 @@ gm.post_code_execute("gml_Object_oInit_Draw_73", function()
         end
         gm.surface_set_target(my_surface)
         gm.shader_set(shd_time_dilation)
-        local _uni_tranzitioner       = gm.shader_get_uniform(shd_time_dilation, "Tranzitioner")
-        local _uni_shader_strength    = gm.shader_get_uniform(shd_time_dilation, "ShaderStrength")
-        local _uni_outline_threshold  = gm.shader_get_uniform(shd_time_dilation, "OutlineThreshold")
-        local _uni_outline_smoothness = gm.shader_get_uniform(shd_time_dilation, "OutlineSmoothness")
-        local _uni_outline_strength   = gm.shader_get_uniform(shd_time_dilation, "OutlineStrength")
-        local _uni_shader_accent      = gm.shader_get_uniform(shd_time_dilation, "ShaderAccent")
         gm.shader_set_uniform_f(_uni_tranzitioner, 0.1)
         gm.shader_set_uniform_f(_uni_shader_strength, 1.0)
         gm.shader_set_uniform_f(_uni_outline_threshold, 0.05)
