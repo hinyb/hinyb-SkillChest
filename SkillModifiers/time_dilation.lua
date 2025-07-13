@@ -1,5 +1,6 @@
 -- This modifier may have many sync issues.
 -- I just found this is a time stop item in the game.
+local shd_time_dilation = gm.shader_add(path.combine(_ENV["!plugins_mod_folder_path"], "shaders", "time_dilation"), "shd_time_dilation")
 local sound
 Initialize(function()
     sound = Resources.sfx_load("hinyb", "clockticks", _ENV["!plugins_mod_folder_path"] .. "/sounds/clockticks.ogg")
@@ -67,5 +68,38 @@ HookSystem.add_special_hook("pre_Perform_Event_Object", function (ret_val, targe
         if gm.variable_global_get("_current_frame") % 4 ~= 0 then
             return false
         end
+    end
+end)
+
+local my_surface
+gm.post_code_execute("gml_Object_oInit_Draw_73", function()
+    if not time_dilation_flag then
+        return
+    end
+    local application_surface = gm.variable_global_get("application_surface")
+    if (gm.surface_exists(application_surface)) then
+        local app_surf_w = gm.surface_get_width(application_surface)
+        local app_surf_h = gm.surface_get_height(application_surface)
+        if not my_surface or app_surf_w ~= gm.surface_get_width(my_surface) or app_surf_h ~= gm.surface_get_height(my_surface) then
+            my_surface = gm.surface_create(app_surf_w, app_surf_h)
+        end
+        gm.surface_set_target(my_surface)
+        gm.shader_set(shd_time_dilation)
+        local _uni_tranzitioner       = gm.shader_get_uniform(shd_time_dilation, "Tranzitioner");
+        local _uni_shader_strength    = gm.shader_get_uniform(shd_time_dilation, "ShaderStrength");
+        local _uni_outline_threshold  = gm.shader_get_uniform(shd_time_dilation, "OutlineThreshold");
+        local _uni_outline_smoothness = gm.shader_get_uniform(shd_time_dilation, "OutlineSmoothness");
+        local _uni_outline_strength   = gm.shader_get_uniform(shd_time_dilation, "OutlineStrength");
+        local _uni_shader_accent      = gm.shader_get_uniform(shd_time_dilation, "ShaderAccent");
+        gm.shader_set_uniform_f(_uni_tranzitioner, 0.1);
+        gm.shader_set_uniform_f(_uni_shader_strength, 1.0);
+        gm.shader_set_uniform_f(_uni_outline_threshold, 0.05);
+        gm.shader_set_uniform_f(_uni_outline_smoothness, 0.02);
+        gm.shader_set_uniform_f(_uni_outline_strength, 0.8);
+        gm.shader_set_uniform_vec3(_uni_shader_accent, 1.0, 0.0, 0.0);
+        gm.draw_surface(application_surface, 0, 0)
+        gm.shader_reset()
+        gm.surface_reset_target()
+        gm.surface_copy(application_surface, 0, 0, my_surface)
     end
 end)

@@ -130,7 +130,7 @@ Initialize(function()
             return
         end
         if gm.call("gml_Script_control", actor.value, actor.value,
-            "teleport_skill" .. Utils.to_string_with_floor(index + 1), false) then
+            "skill" .. Utils.to_string_with_floor(index + 1), false) then
             return
         end
         struct.active = 0.0
