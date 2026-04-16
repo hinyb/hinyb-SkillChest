@@ -1,4 +1,4 @@
-mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
+mods["ReturnsAPI-ReturnsAPI"].auto({mp = true})
 mods["hinyb-Dropability"].auto()
 mods["hinyb-SimpleConfigAPI"].auto()
 
@@ -13,7 +13,7 @@ local function init1()
         end
     end
 end
-Initialize(init1)
+Initialize.add_hotloadable(init1)
 if hot_reload then
     init1()
 end
@@ -27,8 +27,8 @@ for _, name in ipairs(names) do
     settings:add_child(require(name))
 end
 
-mods["MGReturns-ENVY"].auto()
-envy = mods["MGReturns-ENVY"]
+mods["LuaENVY-ENVY"].auto()
+envy = mods["LuaENVY-ENVY"]
 public_things = {
     ["SkillModifierManager"] = SkillModifierManager
 } -- Maybe using a wrong way
@@ -86,11 +86,12 @@ local function init()
     local sprite_color = {gm.make_color_rgb(240, 240, 120), gm.make_color_rgb(240, 120, 120)}
     for chest_type = 1, 2 do
         local name = "oSkillChest" .. chest_type
-        obj = Object.new("hinyb", name, Object.PARENT.interactable)
-        obj.obj_sprite = gm.constants.sChest4
+        obj = Object.new(name, Object.Parent.INTERACTABLE)
+        obj:set_sprite(gm.constants.sChest4)
+        obj:set_depth(1)
 
         -- Create Interactable Card
-        local card = Interactable_Card.new("hinyb", name)
+        local card = InteractableCard.new(name)
         card.object_id = obj
         card.spawn_with_sacrifice = true
         card.spawn_cost = spawn_cost[chest_type]
@@ -102,12 +103,12 @@ local function init()
         for _, stage in ipairs(stages) do
             stage:add_interactable(card)
         end
-        obj:onCreate(function(self)
+        Callback.add(obj.on_create, function(self)
             self.image_blend = sprite_color[chest_type]
             self.image_index = 0.0
             self.image_speed = 0.2
-            self.text = Language.translate_token("interactable.oChest4" .. ".text")
-            local data = self:get_data()
+            self.text = gm.translate("interactable.oChest4" .. ".text")
+            local data = Instance.get_data(self)
             data.skill_sprite = 1628.0
             data.interval = 60.0
             data.executions = 0.0
@@ -115,22 +116,22 @@ local function init()
             data.sprite_offset_y = 0
             init_cost[chest_type](self)
         end)
-        obj:onStep(function(self)
+        Callback.add(obj.on_step, function(self)
             if not self.has_init then
                 self.has_init = true
-                if not Net.is_client() then
+                if not Net.client then
                     Utils.set_and_sync_inst_from_table(self.value, {
                         random_seed = Utils.get_random_seed()
                     })
                 end
             end
-            local data = self:get_data()
+            local data = Instance.get_data(self)
             data.frame = gm.variable_global_get("_current_frame")
             if self.active == 1 then
                 if not data.isopen then
                     data.isopen = true -- but actually is 1.0
-                    self.text = Language.translate_token("interactable.oChest4" .. ".pick")
-                    self.prompt_text = Language.translate_token("interactable.oChest4" .. ".active")
+                    self.text = gm.translate("interactable.oChest4" .. ".pick")
+                    self.prompt_text = gm.translate("interactable.oChest4" .. ".active")
                     self.cost = 0.0
                     self.active = 0
                 elseif self.random_seed then
@@ -161,10 +162,10 @@ local function init()
                             skill_id = data.get_skill()
                         until _CheckSKill(skill_id)
                         data.skill_id = skill_id
-                        local default_skill = Class.SKILL:get(data.skill_id)
+                        local default_skill = Class.Skill:get(data.skill_id)
                         data.skill_sprite = default_skill:get(4)
                         data.skill_subimg = default_skill:get(5)
-                        self.prompt_text = Language.translate_token(default_skill:get(2)) -- It seems it is hard to distinguish which is which,and some skills don't have a icon.
+                        self.prompt_text = gm.translate(default_skill:get(2)) -- It seems it is hard to distinguish which is which,and some skills don't have a icon.
                         if data.executions >= 15 then
                             self.active = 3
                         end
@@ -178,7 +179,7 @@ local function init()
                         SkillPickup.skill_create(self.x + 8, self.y - 10, skill_modifier[chest_type](skill))
                     end
                     self:sound_play_at(gm.constants.wChest2, 1.0, 1.0, self.x, self.y, nil)
-                    local Heal = Particle.find("ror", "Heal")
+                    local Heal = Particle.find("Heal", "ror")
                     Heal:create_color(self.x, self.y, 65536, 30)
                     self.sprite_index = gm.constants.sChest4Open
                     self.image_index = 0
@@ -187,9 +188,9 @@ local function init()
                 end
             end
         end)
-        obj:onDraw(function(self)
+        Callback.add(obj.on_draw, function(self)
             if self.active == 0 then
-                local data = self:get_data()
+                local data = Instance.get_data(self)
                 gm.draw_sprite_ext(data.skill_sprite, data.skill_subimg or 0.0, self.x + data.sprite_offset_x,
                     self.y + gm.dsin(data.frame * 1.333) * 3 - 34 + data.sprite_offset_y, 1.0, 1.0, 0.0, Color.WHITE,
                     0.64)
@@ -197,4 +198,4 @@ local function init()
         end)
     end
 end
-Initialize(init)
+Initialize.add_hotloadable(init)

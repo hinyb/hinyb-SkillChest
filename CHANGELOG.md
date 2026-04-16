@@ -1,3 +1,6 @@
+v3.0.0
+* Update to ReturnsAPI
+
 v2.2.12
 * Fix the potential memory leak.
 

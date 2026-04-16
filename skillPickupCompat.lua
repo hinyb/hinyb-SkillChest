@@ -37,7 +37,7 @@ SkillPickup.add_post_pickup_func(function(actor, target, skill)
     end
     local ctm_arr_modifiers = target.ctm_arr_modifiers
     if ctm_arr_modifiers ~= nil then
-        if type(ctm_arr_modifiers) == "table" then
+        if lua_type(ctm_arr_modifiers) == "table" then
             for i = 1, #ctm_arr_modifiers do
                 local modifier = ctm_arr_modifiers[i]
                 local modifier_args = {}

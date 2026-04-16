@@ -1,22 +1,22 @@
-local cosmic_joke_message_create
-Initialize(function()
-    local cosmic_joke_packet = Packet.new()
-    cosmic_joke_packet:onReceived(function(message, player)
-        local target = message:read_instance().value
+Initialize.add_hotloadable(function()
+    local cosmic_joke_packet = Packet.new("cosmic_joke_packet")
+    cosmic_joke_packet:set_serializers(function(buffer, target)
+        buffer:write_instance(target)
+    end, function(buffer, player)
+        local target = buffer:read_instance().value
+
         local cache_elite = target.elite_type
+
         target:instance_change(gm.constants.oLizard, true)
+
         if cache_elite ~= -1 then
             target:elite_set_internal(target.id, cache_elite)
         end
+
         if target.hp < target.maxhp then
             target.hp = target.maxhp
         end
     end)
-    cosmic_joke_message_create = function(target)
-        local message = cosmic_joke_packet:message_begin()
-        message:write_instance(target)
-        return message
-    end
 end)
 local cosmic_joke = SkillModifierManager.register_modifier("cosmic_joke", 50)
 cosmic_joke.probability = 0.05
@@ -30,8 +30,8 @@ cosmic_joke:set_add_func(function(data, modifier_index)
                 return
             end
             if math.random() < 0.05 then
-                if Net.is_host() then
-                    cosmic_joke_message_create(target):send_to_all()
+                if Net.host then
+                    cosmic_joke_packet:send_to_all(target)
                 end
                 local cache_elite = target.elite_type
                 target:instance_change(gm.constants.oLizard, true)
@@ -54,4 +54,5 @@ end)
 cosmic_joke:set_monster_check_func(function(skill)
     return false
 end)
-cosmic_joke:register_component(ComponentTemplates.create_modifier_double_component("cosmic_joke_proability", "probability"))
+cosmic_joke:register_component(ComponentTemplates.create_modifier_double_component("cosmic_joke_proability",
+    "probability"))

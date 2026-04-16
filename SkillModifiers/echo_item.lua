@@ -13,28 +13,46 @@ echo_item:set_add_func(function(data, modifier_index, item_id)
             stack = stack + 1
             gm.item_give(data.skill.parent, item_id, 1, 1)
         end
-        Alarm.destroy(alarm)
+        Alarm.remove(alarm)
         local player = data.skill.parent
         local player_id = player.id
-        alarm = Alarm.create(function()
+        alarm = Alarm.add(math.floor(data.skill.cooldown_base + time / 2), function()
             if Instance.exists(player_id) then
                 gm.item_take(player, item_id, stack, 1)
             end
             stack = 0
-        end, math.floor(data.skill.cooldown_base + time / 2))
+        end)
     end)
 end)
 echo_item:set_info_func(function(ori_desc, data, item_id)
     local item = Class.ITEM:get(item_id)
-    return Language.translate_token("skill_modifier.echo_item.name") .. ": " ..
-               Language.translate_token("skill_modifier.echo_item.description") .. "\n" .. "<r>" ..
-               Language.translate_token(item:get(2)) .. "</c>" .. ": " .. Language.translate_token(item:get(3)) .. "\n" ..
+    return gm.translate("skill_modifier.echo_item.name") .. ": " ..
+               gm.translate("skill_modifier.echo_item.description") .. "\n" .. "<r>" ..
+               gm.translate(item:get(2)) .. "</c>" .. ": " .. gm.translate(item:get(3)) .. "\n" ..
                ori_desc
 end)
+
+local cache_items
+local get_random_item = function(...)
+    if cache_items then
+        return cache_items[Utils.random_item_id()]
+    end
+    local items = {}
+
+    for i, _ in ipairs(Class.ITEM) do
+        local item = Item.wrap(i - 1)
+        if item.identifier ~= "dummyItem" then
+            table.insert(items, item.value)
+        end
+    end
+
+    return items[gm.irandom_range(1, #items)]
+end
+
 echo_item:set_default_params_func(function()
-    local item_id = Item.get_random().value
+    local item_id = get_random_item()
     while item_blacklist[item_id] do
-        item_id = Item.get_random().value
+        item_id = get_random_item()
     end
     return item_id
 end)
@@ -50,7 +68,7 @@ local function init()
         selectable_list[#selectable_list + 1] = Item.wrap(i).identifier
     end
 end
-Initialize(init)
+Initialize.add_hotloadable(init)
 if hot_reload then
     init()
 end
@@ -100,7 +118,7 @@ echo_item_blacklist.on_draw = function(self)
     index = ImGui.Combo("", index, selectable_list, #selectable_list, 5)
     ImGui.SameLine()
     if ImGui.Button("Add") then
-        if not Helper.table_has(selected_list, index) then
+        if not Util.table_has(selected_list, index) then
             local item = Item.wrap(index)
             ComponentUtils.get_or_create_table(ComponentUtils.get_or_create_table(self.active_params, item.namespace), item.identifier).disable = true
             table.insert(selected_list, index)

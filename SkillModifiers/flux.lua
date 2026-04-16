@@ -11,9 +11,9 @@ local function register_flux(attr, fn)
         return SkillModifierManager.count_modifier(skill, modifier.modifier_name) < 1
     end)
     modifier:set_info_func(function(ori_desc, data)
-        return Language.translate_token("skill_modifier.flux.name") .. "•" ..
-                   Language.translate_token("skill_modifier.flux." .. attr) .. ": " ..
-                   Language.translate_token("skill_modifier.flux.description") .. "\n" .. ori_desc
+        return gm.translate("skill_modifier.flux.name") .. "•" ..
+                   gm.translate("skill_modifier.flux." .. attr) .. ": " ..
+                   gm.translate("skill_modifier.flux.description") .. "\n" .. ori_desc
     end)
     modifier:set_default_params_func(function(skill)
         return fn(skill)

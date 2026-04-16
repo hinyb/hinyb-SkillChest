@@ -8,21 +8,21 @@ local function register(name)
         local id = data:get_id()
         data:add_pre_activate_callback(function(data)
             local base = math.max(data.skill.cooldown_base, 10)
-            Alarm.destroy(alarm)
-            local actor = Instance.wrap(data.skill.parent)
-            if not actor:callback_exists(id) then
-                actor:add_callback("onStatRecalc", id, function(actor)
+            Alarm.remove(alarm)
+            local actor = data.skill.parent
+            if not InstanceExtManager.callback_exists(actor, "post_recalculate_stats", id) then
+                InstanceExtManager.add_callback(actor, "post_recalculate_stats", id, function (actor)
                     actor[name] = 1
                 end)
                 actor[name] = 1
             end
             local actor_id = actor.id
-            alarm = Alarm.create(function()
+            alarm = Alarm.add(math.floor(base), function()
                 if Instance.exists(actor_id) then
-                    actor:remove_callback(id)
-                    GM.actor_queue_dirty(actor)
+                    InstanceExtManager.remove_callback(actor, "post_recalculate_stats", id)
+                    gm.actor_queue_dirty(actor)
                 end
-            end, math.floor(base))
+            end)
         end)
     end)
     modifier:set_check_func(function(skill)

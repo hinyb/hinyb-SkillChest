@@ -36,8 +36,8 @@ modifier_component.on_draw = function(self)
     end
     if ImGui.IsItemHovered() then
         local modifier_name = modifiers_name_order[current_modifier_index + 1]
-        local tooltip = Language.translate_token("skill_modifier." .. modifier_name .. ".name") .. ": " ..
-                            Language.translate_token("skill_modifier." .. modifier_name .. ".description")
+        local tooltip = gm.translate("skill_modifier." .. modifier_name .. ".name") .. ": " ..
+                            gm.translate("skill_modifier." .. modifier_name .. ".description")
         ImGui.SetTooltip(ComponentUtils.tooltip_cleanup(tooltip) .. "\nIt is designed to be applied to a skill, so the tooltip may have some issues.")
     end
     ImGui.SameLine()

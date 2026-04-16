@@ -271,8 +271,8 @@ HookSystem.post_script_hook(gm.constants.skill_can_activate, function(self, othe
     end
 end)
 
-memory.dynamic_hook_mid("hud_draw_skill_info", {"rax", "rsp+200h-188h"}, {"RValue*", "RValue*"}, 0,
-    gm.get_script_function_address(gm.constants.hud_draw_skill_info):add(836), function(args)
+memory.dynamic_hook_mid("hud_draw_skill_info", {"rdx", "rsp+210h-1A0h"}, {"RValue*", "RValue*"}, 0,
+    gm.get_script_function_address(gm.constants.hud_draw_skill_info):add(1048), function(args)
         if args[2].value.ctm_arr_modifiers ~= nil then
             local modifiers = Array.wrap(args[2].value.ctm_arr_modifiers)
             for i = 0, modifiers:size() - 1 do
@@ -290,9 +290,9 @@ memory.dynamic_hook_mid("hud_draw_skill_info", {"rax", "rsp+200h-188h"}, {"RValu
             end
         end
     end)
-local ptr = gm.get_script_function_address(gm.constants.hud_draw_skills):add(5009)
-memory.dynamic_hook_mid("hud_draw_skills_is_primary_fix", {"rbp+610h-600h"}, {"RValue*"}, 0,
-    gm.get_script_function_address(gm.constants.hud_draw_skills):add(4993), function(args)
+local ptr = gm.get_script_function_address(gm.constants.hud_draw_skills):add(5651)
+memory.dynamic_hook_mid("hud_draw_skills_is_primary_fix", {"rbp+6C0h-690h"}, {"RValue*"}, 0,
+    gm.get_script_function_address(gm.constants.hud_draw_skills):add(5631), function(args)
         local skill = args[1].value
         if skill.is_primary == 0 then
             return ptr

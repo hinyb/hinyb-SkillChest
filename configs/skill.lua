@@ -16,8 +16,8 @@ skill_component.on_draw = function(self)
     end
     if ImGui.IsItemHovered() then
         local skill_name = SkillDisplayNames[SkillDisplayMap[current_skill_index]]
-        local tooltip = Language.translate_token("skill." .. skill_name .. ".name") .. ": " ..
-                            Language.translate_token("skill." .. skill_name .. ".description")
+        local tooltip = gm.translate("skill." .. skill_name .. ".name") .. ": " ..
+                            gm.translate("skill." .. skill_name .. ".description")
         ImGui.SetTooltip(ComponentUtils.tooltip_cleanup(tooltip))
     end
 end

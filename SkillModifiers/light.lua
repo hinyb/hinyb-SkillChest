@@ -9,23 +9,27 @@ light:set_add_func(function(data, modifier_index)
     end)
     data:add_pre_activate_callback(function(data)
         data.skill.parent.attack_speed = data.skill.parent.attack_speed * light.attack_speed_multipiler
+        if InstanceExtManager.has_on_anim_end(data.skill.parent, id) then
+            data.skill.parent.attack_speed = data.skill.parent.attack_speed / light.attack_speed_multipiler
+            InstanceExtManager.remove_on_anim_end(data.skill.parent, id)
+        end
         InstanceExtManager.add_on_anim_end(data.skill.parent, id, function(actor)
             actor.attack_speed = actor.attack_speed / light.attack_speed_multipiler
         end)
     end)
-    local inst = Instance.wrap(data.skill.parent)
+    local inst = data.skill.parent
     inst.max_pGravity1 = inst.max_pGravity1 or 30
     inst.max_pGravity1 = inst.max_pGravity1 * light.gravity_multipiler -- see heavy
-    inst:add_callback("onPostStatRecalc", id, function(inst)
+    InstanceExtManager.add_callback(inst, "post_recalculate_stats", id, function (inst)
         inst.pGravity1 = inst.pGravity1 * light.gravity_multipiler
         inst.pGravity2 = inst.pGravity2 * light.gravity_multipiler
     end)
-    GM.actor_queue_dirty(inst)
+    gm.actor_queue_dirty(inst)
 end)
 light:set_remove_func(function(data, modifier_index)
-    local inst = Instance.wrap(data.skill.parent)
-    inst:remove_callback(data:get_id(modifier_index))
-    GM.actor_queue_dirty(inst)
+    local inst = data.skill.parent
+    InstanceExtManager.remove_callback(inst, "post_recalculate_stats", data:get_id(modifier_index))
+    gm.actor_queue_dirty(inst)
     inst.max_pGravity1 = inst.max_pGravity1 / light.gravity_multipiler
 end)
 light:set_check_func(function(skill)

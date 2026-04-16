@@ -53,12 +53,12 @@ local function get_teleport_name(teleport_id)
 end
 local teleport_add_sync
 local teleport_remove_sync
-Initialize(function()
-    local sprite = Resources.sprite_load("hinyb", "entropy",
+Initialize.add_hotloadable(function()
+    local sprite = Sprite.new("entropy",
         _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport_skill.png")
     -- I suck at drawing, so I just use AI-generated paintings.
-    local teleport_sprite = Resources.sprite_load("hinyb", "teleport",
-        _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport.png", 0, 65, 67)
+    local teleport_sprite = Sprite.new("teleport",
+        _ENV["!plugins_mod_folder_path"] .. "/sprites/teleport.png", 0, 65, 67).value
     local my_surface = gm.surface_create(128, 128)
     gm.surface_set_target(my_surface)
     for process = 1, need_process do
@@ -80,7 +80,7 @@ Initialize(function()
     gm.surface_reset_target()
     gm.surface_free(my_surface)
 
-    teleport_skill = Skill.new("hinyb", "teleport")
+    teleport_skill = Skill.new("teleport")
     teleport_add_sync = Utils.create_sync_func([[
     gm.actor_skill_set(a1, a2, teleport_skill_id)
     local new_skill = gm.array_get(a1.skills, a2).active_skill
@@ -89,22 +89,24 @@ Initialize(function()
         teleport_skill_id = teleport_skill.value
     })
     teleport_remove_sync = Utils.create_sync_func([[
-        local actor_ = Instance.wrap(a1)
         local id = get_teleport_name(a2)
-        actor_:remove_callback(id)
+        gm.event_hook_pre_remove(a1, gm.constants.ev_draw, 0, id)
     ]], {Utils.param_type.instance, Utils.param_type.double}, {
         get_teleport_name = get_teleport_name
     })
-    teleport_skill:set_skill_icon(sprite, 0)
-    teleport_skill:set_skill_properties(0, 4 * 60)
-    teleport_skill:set_skill_stock(1, 1, true, 1)
-    teleport_skill:set_skill_settings(true, false, 3, false, false, true, true, false)
+    teleport_skill.sprite = sprite
+    teleport_skill.damage = 0
+    teleport_skill.cooldown = 4 * 60
+    teleport_skill.required_interrupt_priority = 3
+    teleport_skill.override_strafe_direction = false
+    teleport_skill.ignore_aim_direction = true
+    teleport_skill.disable_aim_stall = true
 
-    teleport_skill:onActivate(function(actor, struct, index)
+    Callback.add(teleport_skill.on_activate, function(actor, struct, slot)
         struct.active = 1.0
         struct.process = 0
         local id = get_teleport_name(struct.teleport_id)
-        actor:add_callback("onPreDraw", id, function()
+        gm.event_hook_pre_add(actor.value, gm.constants.ev_draw, 0, id, function (actor)
             struct.freeze_cooldown(struct, struct)
             struct.process = struct.process + 1
             if teleport_sprite_list[struct.process] then
@@ -116,21 +118,20 @@ Initialize(function()
                 struct.active = 0.0
                 local target = find_teleport_target(struct.teleport_id)
                 if target then
-                    gm.teleport_nearby(actor.value, target.x, target.y)
+                    gm.teleport_nearby(actor, target.x, target.y)
                 end
-                actor:remove_callback(id)
+                gm.event_hook_pre_remove(actor, gm.constants.ev_draw, 0, id)
             end
         end)
     end)
-    teleport_skill:onStep(function(actor, struct, index)
+    Callback.add(teleport_skill.on_step, function(actor, struct, slot)
         if not gm.bool(actor.is_local) then
             return
         end
         if struct.active ~= 1.0 then
             return
         end
-        if gm.call("gml_Script_control", actor.value, actor.value,
-            "skill" .. Utils.to_string_with_floor(index + 1), false) then
+        if actor.value:control("skill" .. Utils.to_string_with_floor(slot + 1), false) then
             return
         end
         struct.active = 0.0
@@ -153,7 +154,7 @@ teleport:set_monster_check_func(function(teleport_skill)
 end)
 local total_teleport_num = 0.0 -- There must be a double because all numbers in gamemaker are stored as double.
 teleport:set_default_params_func(function()
-    if Net.is_client() then
+    if Net.client then
         log.warning("Teleport modifier should be initialized only on the host")
     end
     total_teleport_num = total_teleport_num + 1

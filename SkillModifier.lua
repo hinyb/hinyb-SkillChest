@@ -19,8 +19,8 @@ function SkillModifier.new(modifer_name, weight)
     self.enable = true
     self.component_childs = {}
     self.info_func = function(ori_desc)
-        return Language.translate_token("skill_modifier." .. modifer_name .. ".name") .. ": " ..
-                   Language.translate_token("skill_modifier." .. modifer_name .. ".description") .. "\n" .. ori_desc
+        return gm.translate("skill_modifier." .. modifer_name .. ".name") .. ": " ..
+                   gm.translate("skill_modifier." .. modifer_name .. ".description") .. "\n" .. ori_desc
     end
     return self
 end

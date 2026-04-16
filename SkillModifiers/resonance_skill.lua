@@ -25,20 +25,20 @@ resonance_skill:set_default_params_func(function()
     end
 end)
 resonance_skill:set_info_func(function(ori_desc, data, skill_id)
-    local skill = Class.SKILL:get(skill_id)
-    return Language.translate_token("skill_modifier.resonance_skill.name") .. ": " ..
-               Language.translate_token("skill_modifier.resonance_skill.description") .. "\n" .. "<r>" ..
-               Language.translate_token(skill:get(2)) .. "</c>" .. ": " .. Language.translate_token(skill:get(3)) ..
+    local skill = Class.Skill:get(skill_id)
+    return gm.translate("skill_modifier.resonance_skill.name") .. ": " ..
+               gm.translate("skill_modifier.resonance_skill.description") .. "\n" .. "<r>" ..
+               gm.translate(skill:get(2)) .. "</c>" .. ": " .. gm.translate(skill:get(3)) ..
                "\n" .. ori_desc
 end)
 resonance_skill:register_component(ComponentTemplates.create_modifier_double_component(
     "resonance_skill_cooldown_multipiler", "cooldown_multipiler"))
-Initialize(function()
-    local oFakeActor = Object.new("hinyb", "oFakeActor", Object.PARENT.actor)
+Initialize.add_hotloadable(function()
+    local oFakeActor = Object.new("oFakeActor", Object.Parent.ACTOR)
     gm.constants.oFakeActor = oFakeActor.value
     local my_surface = gm.surface_create(32, 32)
     gm.surface_set_target(my_surface)
-    oFakeActor.obj_sprite = gm.sprite_create_from_surface(my_surface, 0, 0, 32, 32, false, false, 64, 64)
+    oFakeActor:set_sprite(gm.sprite_create_from_surface(my_surface, 0, 0, 32, 32, false, false, 64, 64))
     gm.surface_reset_target()
     gm.surface_free(my_surface)
 
@@ -63,7 +63,7 @@ Initialize(function()
         end
 
         CompatibilityPatch.set_compat(inst)
-        local is_local = not Net.is_client()
+        local is_local = not Net.client
         inst.is_local = is_local
         inst.local_client_is_authority = is_local
 
@@ -74,14 +74,14 @@ Initialize(function()
         inst.m_id = inst:set_m_id(inst.id)
 
         inst.is_targettable = false
-        gm.call("gml_Script___actor_update_target_marker", inst, inst)
+        inst:__actor_update_target_marker()
 
         gm.actor_skill_set(inst, 0, skill_id)
         local i_skill = inst:actor_get_skill_active(0)
         local flag = 0
         i_skill.stock = required_stock * 2
         local start_frame = gm.variable_global_get("_current_frame")
-        InstanceExtManager.add_callback(inst, "post_instance_destroy", "resonance_skill", function(actor)
+        gm.event_hook_post_add(inst, gm.constants.ev_destroy, 0, "resonance_skill", function(actor)
             if not Instance.exists(target_id) then
                 return
             end
@@ -91,23 +91,20 @@ Initialize(function()
                 t_skill.stock = t_skill.stock + stock_diff
             end
         end)
-        InstanceExtManager.add_callback(inst, "pre_step", "resonance_skill", function(actor, event_number)
-            if event_number:get() ~= 2 then
-                return HookFlags.fSkipOriginal
-            end
+        gm.event_hook_pre_add(inst, gm.constants.ev_step, 2, "resonance_skill", function(actor, event_number)
             if flag > 1 or gm.variable_global_get("_current_frame") - start_frame >= 600 or
                 not Instance.exists(target_id) then
                 gm.instance_destroy(actor)
-                return HookFlags.fSkipQueue | HookFlags.fSkipOriginal
+                return false
             end
             i_skill:freeze_cooldown(i_skill, i_skill)
-            if not Net.is_client() and actor:skill_can_activate(0) then
+            if not Net.client and actor:skill_can_activate(0) then
                 actor.z_skill = 1
             end
             actor:skill_system_update()
             actor:step_actor()
             actor:step_default()
-            return HookFlags.fSkipOriginal
+            return false
         end)
         InstanceExtManager.add_callback(inst, "pre_skill_activate", "resonance_skill", function(actor)
             flag = flag + 1
@@ -125,7 +122,7 @@ Initialize(function()
                 end
             end
         end)
-        if not Net.is_client() then
+        if not Net.client then
             InstanceExtManager.add_callback(inst, "pre_apply_buff", "resonance_skill_host",
                 function(actor, buff_id, time, stack_kind)
                     target:apply_buff(target, buff_id, time, stack_kind)
@@ -149,7 +146,7 @@ local function init1()
         end
     end
 end
-Initialize(init1)
+Initialize.add_hotloadable(init1)
 if hot_reload then
     init1()
 end
@@ -199,7 +196,7 @@ resonance_skill_blacklist.on_draw = function(self)
     index = ImGui.Combo("", index, selectable_list, #selectable_list, 5)
     ImGui.SameLine()
     if ImGui.Button("Add") then
-        if not Helper.table_has(selected_list, index) then
+        if not Util.table_has(selected_list, index) then
             local skill = Skill.wrap(selectable_map[index])
             ComponentUtils.get_or_create_table(ComponentUtils.get_or_create_table(self.active_params, skill.namespace),
                 skill.identifier).disable = true

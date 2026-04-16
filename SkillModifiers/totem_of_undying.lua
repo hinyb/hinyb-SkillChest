@@ -1,7 +1,7 @@
 -- Stealing from Minecraft, I'm not sure if it's safe to use.
 local sound
-Initialize(function()
-    sound = Resources.sfx_load("hinyb", "totem_of_undying", _ENV["!plugins_mod_folder_path"] .. "/sounds/use_totem.ogg")
+Initialize.add_hotloadable(function()
+    sound = Sound.new("totem_of_undying", _ENV["!plugins_mod_folder_path"] .. "/sounds/use_totem.ogg").value
 end)
 local totem_of_undying = SkillModifierManager.register_modifier("totem_of_undying", 50)
 totem_of_undying.invincible_duraction = 1

@@ -1,0 +1,111 @@
+return {
+    skill_modifier = {
+        echo_item = {
+            name = "<y>Echo Item</c>",
+            description = "Give a <y>temporary item</c>, but <r>additional cooldown</c> applies."
+        },
+        void_power = {
+            name = "<y>Void Power</c>",
+            description = "The more <r>empty</c> skill slots, the more <r>power</c>!"
+        },
+        flux = {
+            name = "<r>Flux</c>",
+            description = "Change the corresponding attribute <r>randomly</c>.",
+            max_stock = "<y>Charge</c>",
+            damage = "<y>Damage</c>",
+            cooldown = "<y>Cooldown</c>",
+            slot_index = "<y>Slot</c>"
+        },
+        life_burn = {
+            name = "<y>Life Burn</c>",
+            description = "Can <y>forcibly</c> trigger this skill by <r>burning your life</c>.",
+            kill_name = "<y>Life Burn</c>"
+        },
+        after_image = {
+            name = "<y>After-Image</c>",
+            description = "Focus briefly, channeling energy into an after-image. <b>All attacks are doubled</c>. \nStacks twice. Its during depends on the skill's <y>cooldown</c>."
+        },
+        fragile = {
+            name = "<y>Fragile</c>",
+            description = "Greatly increases the skill's <y>damage</c>, but each <r>use</r> may cause the skill to <r>fracture</r>."
+        },
+        evolving_hunger = {
+            name = "<y>Evolving Hunger</c>",
+            description = "A relentless desire for power that <r>devours</c> its host, <y>growing</c> with each use."
+        },
+        totem_of_undying = {
+            name = "<y>Totem of Undying</c>",
+            description = "When the player receives <r>fatal damage</r>, revive the player and <r>break</r> the skill."
+        },
+        time_dilation = {
+            name = "<y>Time Dilation</c>",
+            description = "After <r>using</r> this skill, the time flow of <r>everything</r> except players is <y>temporarily slowed</c>, while players will <y>speed up</c>."
+        },
+        entropy = {
+            name = "<y>Entropy</c>",
+            description = "When this skill <r>gains a stack</c>, it <y>randomly transforms</y> into another skill."
+        },
+        fire_trail = {
+            name = "<y>Fire Trail</c>",
+            description = "After <r>using</r> this skill, a <y>blazing trail</y> follows you <r>temporarily</r>, scorching everything in its path."
+        },
+        explosive_shot = {
+            name = "<y>Explosive Shot</c>",
+            description = "After <r>using</r> this skill, your attacks are <r>temporarily</c> infused with <y>explosive</y> power."
+        },
+        lightning = {
+            name = "<y>Lightning</c>",
+            description = "After <r>using</r> this skill, your attacks are <r>temporarily</c> infused with <y>lightning</y> power."
+        },
+        teleport = {
+            name = "<y>Teleport</c>",
+            description = "After <r>drop</c> this skill, you will get a new skill to <y>teleport</c> to this skill."
+        },
+        blood_lust = {
+            name = "<y>Blood Lust</c>",
+            description = "<r>Slay</c> your enemies to quench your thirst for blood, <y>restoring health</c> with every kill."
+        },
+        endest_reap = {
+            name = "<y>Endest Reap</c>",
+            description = "<r>Defeat a boss</c> to harvest their power, increasing your skill <y>damage</c> with every kill."
+        },
+        perpetual_strike = {
+            name = "<y>Perpetual Strike</c>",
+            description = "Relentless and unyielding, this skill's <y>damage</c> increases with every <r>consecutive</c> hit on the <r>same</r> enemy."
+        },
+        light = {
+            name = "<y>Light</c>",
+            description = "<r>Reduces</c> <y>gravity</c>, significantly <r>increases</c> <y>attack speed</c>, but <r>reduces</c> <y>damage</c>."
+        },
+        heavy = {
+            name = "<y>Heavy</c>",
+            description = "The weight is so overwhelming that it feels like carrying an <b>anvil</c>.\n <r>Increases</c> gravity</c>, significantly <r>increases</c> <y>damage</c>, but <r>reduces</c> <y>attack speed</c>."
+        },
+        noxp = {
+            name = "<y>NoXP, More Power</c>",
+            description = "The skill <r>prevents</c> the owner from <y>leveling up</c>, but greatly <r>increases</c> its <y>damage</c>."
+        },
+        cosmic_joke = {
+            name = "<y>Cosmic Joke</c>",
+            description = "A mysterious power that, with a very small chance, <r>permanently transforms</c> non-boss enemies into the <y>weakest creatures</c> imaginable."
+        },
+        phantom_impact = {
+            name = "<y>Phantom Impact</c>",
+            description = "A mysterious force <r>expands</c> the <y>collision bounds</c> of your shots, causing them become bigger, yet the bullets themselves remain untouched."
+        },
+        chaos_faction = {
+            name = "<y>Chaos Faction</c>",
+            description = "By making a pact with the Chaos Faction, your attacks will deal <y>more damage</c> but will no longer discriminate, <r>harming both enemies and allies</c>."
+        },
+        resonance_skill = {
+            name = "<y>Resonance Skill</c>",
+            description = "Activating this skill triggers an <y>additional skill</y>, but <r>additional cooldown</c> applies."
+        }
+    },
+    skill = {
+        teleport = {
+            name = "Teleport",
+            description = "Teleport to the bind skill."
+        }
+    }
+}

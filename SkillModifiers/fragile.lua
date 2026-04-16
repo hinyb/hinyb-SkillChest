@@ -1,7 +1,7 @@
 local sound
-Initialize(function()
-    sound = Resources.sfx_load("hinyb", "totem_of_undying",
-        _ENV["!plugins_mod_folder_path"] .. "/sounds/glass_shatter.ogg")
+Initialize.add_hotloadable(function()
+    sound = Sound.new("totem_of_undying",
+        _ENV["!plugins_mod_folder_path"] .. "/sounds/glass_shatter.ogg").value
 end)
 local fragile = SkillModifierManager.register_modifier("fragile", 250)
 fragile.damage_multipiler = 10

@@ -8,7 +8,7 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
     local modifer = Array.wrap(data.skill.ctm_arr_modifiers):get(modifier_index)
     data:add_pre_activate_callback(function(data)
         local times = modifer:get(1)
-        local actor = Instance.wrap(data.skill.parent)
+        local actor = data.skill.parent
         local skill_address = memory.get_usertype_pointer(data.skill)
         local id = Utils.to_string_with_floor(skill_address) .. tostring(modifier_index) .. Utils.to_string_with_floor(times)
         local num = Utils.round(0.64 * times * 1.08 ^ times * evolving_hunger.hp_multipiler)
@@ -20,13 +20,13 @@ evolving_hunger:set_add_func(function(data, modifier_index, times)
             end)
             num = actor.maxhp - 1
         end
-        actor:add_callback("onStatRecalc", id, function(actor)
+        InstanceExtManager.add_callback(actor, "post_recalculate_stats", id, function (actor)
             actor.maxhp = actor.maxhp - num
         end)
         data:add_skill_attr_change("damage", function(origin_value)
             return origin_value * evolving_hunger.damage_multipiler
         end)
-        gm.actor_queue_dirty(actor.value)
+        gm.actor_queue_dirty(actor)
         times = times + 1
         modifer:set(1, times)
     end)

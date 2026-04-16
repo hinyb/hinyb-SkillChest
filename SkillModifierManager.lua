@@ -34,22 +34,22 @@ end
 SkillModifierManager.add_modifier_params = function(skill_params, modifier_name, ...)
     local modifier = SkillModifierManager.get_modifier(modifier_name)
     if not modifier.check_func(skill_params) then
-        log.error("Can't add the modifier to this skill_params" .. modifier_name, 2)
+        log.error("Can't add the modifier to this skill_params " .. modifier_name, 2)
     end
-    local params = {...}
-    params = #params > 0 and params or {modifier.default_params_func(skill_params)}
+    local params = { ... }
+    params = #params > 0 and params or { modifier.default_params_func(skill_params) }
     skill_params.ctm_arr_modifiers = skill_params.ctm_arr_modifiers or {}
-    table.insert(skill_params.ctm_arr_modifiers, {modifier_name, table.unpack(params)})
+    table.insert(skill_params.ctm_arr_modifiers, { modifier_name, table.unpack(params) })
     return #skill_params.ctm_arr_modifiers - 1, table.unpack(params)
 end
 -- here may cause memory leak, need to solve.
 SkillModifierManager.add_modifier_local = function(skill, modifier_name, ...)
     local modifier = SkillModifierManager.get_modifier(modifier_name)
     if not modifier.check_func(skill) then
-        log.error("Can't add the modifier to this skill" .. modifier_name, 2)
+        log.error("Can't add the modifier to this skill " .. modifier_name, 2)
     end
-    local params = {...}
-    params = #params > 0 and params or {modifier.default_params_func(skill)}
+    local params = { ... }
+    params = #params > 0 and params or { modifier.default_params_func(skill) }
     skill.ctm_arr_modifiers = skill.ctm_arr_modifiers or gm.array_create(0, 0)
     local arr_modifier = gm.array_create(1, modifier_name)
     for i = 1, #params do
@@ -61,14 +61,17 @@ SkillModifierManager.add_modifier_local = function(skill, modifier_name, ...)
     modifier.add_func(data, modifier_index, table.unpack(params))
     return modifier_index, table.unpack(params)
 end
-local add_modifier_message_create
+local add_modifier_packet
 SkillModifierManager.add_modifier_sync = function(skill, modifier_name, ...)
-    local modifier_details = {SkillModifierManager.add_modifier_local(skill, modifier_name, ...)}
+    local modifier_details = { SkillModifierManager.add_modifier_local(skill, modifier_name, ...) }
     table.remove(modifier_details, 1)
-    if Net.is_host() then
-        add_modifier_message_create(skill.parent, skill.slot_index, modifier_name, table.unpack(modifier_details)):send_to_all()
-    elseif Net.is_client() then
-        add_modifier_message_create(skill.parent, skill.slot_index, modifier_name, table.unpack(modifier_details)):send_to_host()
+    if not Net.online then
+        return
+    end
+    if Net.host then
+        add_modifier_packet:send_to_all(skill.parent, skill.slot_index, modifier_name, table.unpack(modifier_details))
+    elseif Net.client then
+        add_modifier_packet:send_to_host(skill.parent, skill.slot_index, modifier_name, table.unpack(modifier_details))
     end
 end
 -- don't actually remove ctm_arr_modifiers
@@ -83,16 +86,17 @@ SkillModifierManager.remove_modifier_local = function(skill, modifier_index)
     modifier.remove_func(data, modifier_index, table.unpack(params))
     SkillModifierManager.clear_modifier_data(skill, modifier_index)
 end
-local remove_modifier_message_create
 SkillModifierManager.remove_modifier_sync = function(skill, modifier_index)
     SkillModifierManager.remove_modifier_local(skill, modifier_index)
-    if Net.is_host() then
-        remove_modifier_message_create(skill.parent, skill.slot_index, modifier_index):send_to_all()
-    elseif Net.is_client() then
-        remove_modifier_message_create(skill.parent, skill.slot_index, modifier_index):send_to_host()
+    if not Net.online then
+        return
+    end
+    if Net.host then
+        remove_modifier_packet:send_to_all(skill.parent, skill.slot_index, modifier_index)
+    elseif Net.client then
+        remove_modifier_packet:send_to_host(skill.parent, skill.slot_index, modifier_index)
     end
 end
-local clear_and_set_skill_message_create
 SkillModifierManager.clear_and_set_skill_sync = function(instance, slot_index, skill_id)
     skill_id = skill_id or 0
     local skill = gm.array_get(instance.skills, slot_index).active_skill
@@ -103,10 +107,13 @@ SkillModifierManager.clear_and_set_skill_sync = function(instance, slot_index, s
         end
     end
     gm.actor_skill_set(skill.parent, skill.slot_index, skill_id)
-    if Net.is_host() then
-        clear_and_set_skill_message_create(skill.parent, skill.slot_index, skill_id):send_to_all()
-    elseif Net.is_client() then
-        clear_and_set_skill_message_create(skill.parent, skill.slot_index, skill_id):send_to_host()
+    if not Net.online then
+        return
+    end
+    if Net.host then
+        clear_and_set_skill_packet:send_to_all(skill.parent, skill.slot_index, skill_id)
+    elseif Net.client then
+        clear_and_set_skill_packet:send_to_host(skill.parent, skill.slot_index, skill_id)
     end
 end
 SkillModifierManager.create_modifier_data = function(skill, modifier_index, modifier_name)
@@ -137,13 +144,13 @@ end
 SkillModifierManager.count_modifier = function(skill, modifier_name)
     local stack = 0
     if skill.ctm_arr_modifiers ~= nil then
-        if type(skill) == "table" then
+        if lua_type(skill) == "table" then
             for _, modifier_data in ipairs(skill.ctm_arr_modifiers) do
                 if modifier_data[1] == modifier_name then
                     stack = stack + 1
                 end
             end
-        elseif type(skill) == "userdata" then
+        elseif lua_type(skill) == "userdata" then
             for i = 0, gm.array_length(skill.ctm_arr_modifiers) - 1 do
                 if gm.array_get(gm.array_get(skill.ctm_arr_modifiers, i), 0) == modifier_name then
                     stack = stack + 1
@@ -162,7 +169,7 @@ SkillModifierManager.get_random_modifier_name_with_check = function(skill)
     end
     local random_modifier = modifier_pool[random_modifier_name]
     return random_modifier.check_func(skill) and random_modifier_name or
-               SkillModifierManager.get_random_modifier_name_with_check(skill)
+        SkillModifierManager.get_random_modifier_name_with_check(skill)
 end
 SkillModifierManager.get_random_modifier_name_with_monster_check = function(skill)
     local random_modifier_name = SkillModifierManager.get_random_modifier_name_with_check(skill)
@@ -171,7 +178,7 @@ SkillModifierManager.get_random_modifier_name_with_monster_check = function(skil
     end
     local random_modifier = modifier_pool[random_modifier_name]
     return random_modifier.monster_check_func(skill) and random_modifier_name or
-               SkillModifierManager.get_random_modifier_name_with_monster_check(skill)
+        SkillModifierManager.get_random_modifier_name_with_monster_check(skill)
 end
 SkillModifierManager.update_weight = function()
     total_weight = 0
@@ -182,30 +189,34 @@ end
 HookSystem.post_script_hook(gm.constants.run_destroy, function(self, other, result, args)
     skills_data = {}
 end)
-Initialize(function()
-    local remove_modifier_packet = Packet.new()
-    remove_modifier_packet:onReceived(function(message, player)
-        local instance = message:read_instance().value
-        local slot_index = message:read_byte()
-        local modifier_index = message:read_byte()
+Initialize.add_hotloadable(function()
+    local remove_modifier_packet = Packet.new("remove_modifier_packet")
+    remove_modifier_packet:set_serializers(function(buffer, instance, slot_index, modifier_index)
+        buffer:write_instance(instance)
+        buffer:write_byte(slot_index)
+        buffer:write_byte(modifier_index)
+    end, function(buffer, player)
+        local instance = buffer:read_instance().value
+        local slot_index = buffer:read_byte()
+        local modifier_index = buffer:read_byte()
+
         local skill = gm.array_get(instance.skill, slot_index).active_skill
         SkillModifierManager.remove_modifier_local(skill, modifier_index)
-        if Net.is_host() then
-            remove_modifier_message_create(instance, slot_index, modifier_index):send_exclude(player)
+
+        if Net.host then
+            remove_modifier_packet:send_exclude(player, instance, slot_index, modifier_index)
         end
     end)
-    remove_modifier_message_create = function(instance, slot_index, modifier_index, exclude_player)
-        local sync_message = remove_modifier_packet:message_begin()
-        sync_message:write_instance(instance)
-        sync_message:write_byte(slot_index)
-        sync_message:write_byte(modifier_index)
-        return sync_message
-    end
-    local clear_and_set_skill_packet = Packet.new()
-    clear_and_set_skill_packet:onReceived(function(message, player)
-        local instance = message:read_instance().value
-        local slot_index = message:read_byte()
-        local skill_id = message:read_ushort()
+    local clear_and_set_skill_packet = Packet.new("clear_and_set_skill_packet")
+    clear_and_set_skill_packet:set_serializers(function(buffer, instance, slot_index, skill_id)
+        buffer:write_instance(instance)
+        buffer:write_byte(slot_index)
+        buffer:write_ushort(skill_id)
+    end, function(buffer, player)
+        local instance = buffer:read_instance().value
+        local slot_index = buffer:read_byte()
+        local skill_id = buffer:read_ushort()
+
         local skill = gm.array_get(instance.skills, slot_index).active_skill
         if skill.ctm_arr_modifiers then
             local ctm_arr_modifiers = Array.wrap(skill.ctm_arr_modifiers)
@@ -214,45 +225,38 @@ Initialize(function()
             end
         end
         gm.actor_skill_set(skill.parent, skill.slot_index, skill_id)
-        if Net.is_host() then
-            clear_and_set_skill_message_create(instance, slot_index, skill_id):send_exclude(player)
+
+        if Net.host then
+            clear_and_set_skill_packet:send_exclude(player, instance, slot_index, skill_id)
         end
     end)
-    clear_and_set_skill_message_create = function(instance, slot_index, skill_id, exclude_player)
-        local sync_message = clear_and_set_skill_packet:message_begin()
-        sync_message:write_instance(instance)
-        sync_message:write_byte(slot_index)
-        sync_message:write_short(skill_id)
-        return sync_message
-    end
-    local add_modifier_packet = Packet.new()
-    add_modifier_packet:onReceived(function(message, player)
-        local instance = message:read_instance().value
-        local slot_index = message:read_byte()
-        local modifier_name = message:read_string()
+    add_modifier_packet = Packet.new("add_modifier_packet")
+    add_modifier_packet:set_serializers(function(buffer, instance, slot_index, modifier_name, ...)
+        buffer:write_instance(instance)
+        buffer:write_byte(slot_index)
+        buffer:write_string(modifier_name)
+        local params = { ... }
+        buffer:write_byte(#params)
+        for i = 1, #params do
+            buffer:write_float(params[i])
+        end
+    end, function(buffer, player)
+        local instance = buffer:read_instance().value
+        local slot_index = buffer:read_byte()
+        local modifier_name = buffer:read_string()
         local skill = gm.array_get(instance.skills, slot_index).active_skill
-        local param_num = message:read_byte()
+        local param_num = buffer:read_byte()
         local params = {}
         for i = 1, param_num do
-            params[i] = message:read_float()
+            params[i] = buffer:read_float()
         end
+
         SkillModifierManager.add_modifier_local(skill, modifier_name, table.unpack(params))
-        if Net.is_host() then
-            add_modifier_message_create(instance, slot_index, modifier_name, table.unpack(params)):send_exclude(player)
+
+        if Net.host then
+            add_modifier_packet:send_exclude(player, instance, slot_index, modifier_name, table.unpack(params))
         end
     end)
-    add_modifier_message_create = function(instance, slot_index, modifier_name, ...)
-        local sync_message = add_modifier_packet:message_begin()
-        sync_message:write_instance(instance)
-        sync_message:write_byte(slot_index)
-        sync_message:write_string(modifier_name)
-        local params = {...}
-        sync_message:write_byte(#params)
-        for i = 1, #params do
-            sync_message:write_double(params[i])
-        end
-        return sync_message
-    end
 end)
 
 local names = path.get_files(_ENV["!plugins_mod_folder_path"] .. "/SkillModifiers")

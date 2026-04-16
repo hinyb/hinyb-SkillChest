@@ -5,8 +5,7 @@ endest_reap:set_add_func(function(data, modifier_index)
     data:add_skill_attr_change("damage", function(origin_value)
         return origin_value + modifer:get(1) * endest_reap.damage_multipiler
     end)
-    local actor = Instance.wrap(data.skill.parent)
-    actor:add_callback("onKillProc", data:get_id(modifier_index), function(actor, victim)
+    InstanceExtManager.add_callback(data.skill.parent, "on_kill_other", data:get_id(modifier_index), function (victim, attacker)
         if victim.boss_drop_item ~= 0.0 then
             modifer:set(1, modifer:get(1) + 1)
             gm._mod_ActorSkill_recalculateStats(data.skill)
@@ -14,8 +13,7 @@ endest_reap:set_add_func(function(data, modifier_index)
     end)
 end)
 endest_reap:set_remove_func(function(data, modifier_index)
-    local actor = Instance.wrap(data.skill.parent)
-    actor:remove_callback(data:get_id(modifier_index))
+    InstanceExtManager.remove_callback(data.skill.parent, "on_kill_other", data:get_id(modifier_index))
 end)
 endest_reap:set_default_params_func(function()
     return 0
@@ -28,7 +26,7 @@ endest_reap:set_monster_check_func(function(skill)
 end)
 endest_reap:set_info_func(function(ori_desc, data, stack)
     return
-        Language.translate_token("skill_modifier.endest_reap.name") .. " • " .. Utils.to_string_with_floor(stack) ..
-            ": " .. Language.translate_token("skill_modifier.endest_reap.description") .. "\n" .. ori_desc
+        gm.translate("skill_modifier.endest_reap.name") .. " • " .. Utils.to_string_with_floor(stack) ..
+            ": " .. gm.translate("skill_modifier.endest_reap.description") .. "\n" .. ori_desc
 end)
 endest_reap:register_component(ComponentTemplates.create_modifier_double_component("endest_reap_damage_multipiler", "damage_multipiler"))
